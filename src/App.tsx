@@ -1,18 +1,21 @@
-import Sidebar from './components/Sidebar';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import DashboardLayout from 'layout/DashboardLayout';
+import { ROUTES } from 'constants/routes';
 
 function App() {
   return (
-    <div className="flex w-full min-h-screen">
-      <Sidebar />
-      <main className="flex flex-col flex-1 gap-6 px-6 py-4">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<div>Hallo</div>} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route path={ROUTES.HOME} element={<DashboardLayout />}>
+        <Route index element={<div>Hallo</div>} />
+        <Route path={ROUTES.LIST_MOTOR} element={<div>List Motor</div>} />
+        <Route path={ROUTES.TRANSACTION} element={<div>Transaksi</div>} />
+        <Route path={ROUTES.SERVICE} element={<div>Data Service</div>} />
+        <Route path={ROUTES.REPORT} element={<div>Laporan Bulanan</div>} />
+      </Route>
+      <Route path={ROUTES.LOGIN} element={<div>Login</div>} />
+      <Route path={ROUTES.REGISTER} element={<div>Register</div>} />
+      <Route path="*" element={<div>Not Found</div>} />
+    </Routes>
   );
 }
 

@@ -1,5 +1,5 @@
-import sidebarLinks from '../constants/links';
-import SidebarLink from './SidebarLink';
+import sidebarLinks from 'constants/links';
+import SidebarLink from '../components/SidebarLink';
 
 const Sidebar = () => {
   return (

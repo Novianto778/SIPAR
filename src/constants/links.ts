@@ -3,32 +3,33 @@ import { FaMotorcycle } from 'react-icons/fa';
 import { AiFillTool } from 'react-icons/ai';
 import { TbReportAnalytics } from 'react-icons/tb';
 import { BiTransfer } from 'react-icons/bi';
+import { ROUTES } from './routes';
 
 const sidebarLinks = [
   {
     name: 'Dashboard',
     icon: HiHome,
-    path: '/',
+    path: ROUTES.HOME,
   },
   {
     name: 'Transaksi',
     icon: BiTransfer,
-    path: '/transaksi',
+    path: ROUTES.TRANSACTION,
   },
   {
     name: 'List Motor',
     icon: FaMotorcycle,
-    path: '/list-motor',
+    path: ROUTES.LIST_MOTOR,
   },
   {
     name: 'Service',
     icon: AiFillTool,
-    path: '/service',
+    path: ROUTES.SERVICE,
   },
   {
     name: 'Laporan',
     icon: TbReportAnalytics,
-    path: '/laporan',
+    path: ROUTES.REPORT,
   },
 ];
 
