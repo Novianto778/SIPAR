@@ -2,7 +2,10 @@ import TextField from 'components/form/TextField';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { signInWithEmail } from 'lib/supabase';
+import useSignIn from 'hooks/useSignIn';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ROUTES } from 'constants/routes';
+import { useEffect } from 'react';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -12,6 +15,9 @@ const loginSchema = z.object({
 type loginTypes = z.infer<typeof loginSchema>;
 
 const Login = () => {
+  const { user, signIn, error } = useSignIn();
+  const navigate = useNavigate();
+  const location = useLocation();
   const {
     register,
     handleSubmit,
@@ -20,9 +26,17 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  const redirectPath = location?.state || ROUTES.HOME;
+
   const onSubmit = async (data: loginTypes) => {
-    signInWithEmail(data);
+    signIn(data);
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate(redirectPath);
+    }
+  }, [user, redirectPath, navigate]);
 
   return (
     <section className="h-screen">
@@ -39,6 +53,15 @@ const Login = () => {
             <h2 className="text-center text-xl mb-8 font-semibold">
               Login to Your Account
             </h2>
+            {error && (
+              <div
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                role="alert"
+              >
+                <strong className="font-bold">Error!</strong>
+                <span className="block sm:inline">{error.message}</span>
+              </div>
+            )}
             <form onSubmit={handleSubmit(onSubmit)}>
               <TextField
                 placeholder="Masukkan email"
