@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import DashboardLayout from 'layout/DashboardLayout';
 import { ROUTES } from 'constants/routes';
+import Login from 'pages/Login';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <Route path={ROUTES.SERVICE} element={<div>Data Service</div>} />
         <Route path={ROUTES.REPORT} element={<div>Laporan Bulanan</div>} />
       </Route>
-      <Route path={ROUTES.LOGIN} element={<div>Login</div>} />
+      <Route path={ROUTES.LOGIN} element={<Login />} />
       <Route path={ROUTES.REGISTER} element={<div>Register</div>} />
       <Route path="*" element={<div>Not Found</div>} />
     </Routes>
