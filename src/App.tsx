@@ -4,6 +4,7 @@ import { ROUTES } from 'constants/routes';
 import Login from 'pages/Login';
 import useAuthStateChange from 'hooks/useAuthStateChange';
 import ProtectedRoutes from 'layout/ProtectedRoutes';
+import Dashboard from 'pages/Dashboard';
 
 function App() {
   const { loading } = useAuthStateChange();
@@ -13,7 +14,7 @@ function App() {
     <Routes>
       <Route element={<ProtectedRoutes />}>
         <Route path={ROUTES.HOME} element={<DashboardLayout />}>
-          <Route index element={<div>Hallo</div>} />
+          <Route index element={<Dashboard />} />
           <Route path={ROUTES.LIST_MOTOR} element={<div>List Motor</div>} />
           <Route path={ROUTES.TRANSACTION} element={<div>Transaksi</div>} />
           <Route path={ROUTES.SERVICE} element={<div>Data Service</div>} />

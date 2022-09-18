@@ -13,7 +13,12 @@ const Navbar = () => {
   return (
     <nav>
       <header className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">SIPAR</h1>
+        <div>
+          <h1 className="text-lg font-semibold">Dashboard</h1>
+          <h6 className="text-sm font-medium text-gray-600">
+            22 September 2022
+          </h6>
+        </div>
         <div className="flex items-center space-x-4">
           <div className="relative cursor-pointer">
             <BiBell className="w-6 h-6" />
@@ -27,7 +32,7 @@ const Navbar = () => {
               onClick={handleTogglePopover}
             />
             {isPopover && (
-              <div className="absolute top-10 right-0 w-48 bg-white rounded-md shadow-lg">
+              <div className="absolute top-10 right-0 w-48 bg-white rounded-md shadow-lg z-50">
                 <div className="flex flex-col px-4 py-2">
                   <div className="flex items-center space-x-2">
                     <img src={Avatar} alt="avatar" className="w-8 h-8" />

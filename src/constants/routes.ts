@@ -8,6 +8,7 @@ export const ROUTES = {
   SETTINGS: '/settings',
   TRANSACTION: '/transaksi',
   LIST_MOTOR: '/list-motor',
+  MOTOR_ON_GOING: '/on-going',
   SERVICE: '/service',
   REPORT: '/laporan',
 };
