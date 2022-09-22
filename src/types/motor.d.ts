@@ -4,4 +4,5 @@ interface Motor {
   cc?: number;
   harga: number;
   stok: number;
+  img: string;
 }

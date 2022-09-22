@@ -6,11 +6,11 @@ import useAuthStateChange from 'hooks/useAuthStateChange';
 import ProtectedRoutes from 'layout/ProtectedRoutes';
 import Dashboard from 'pages/Dashboard';
 import ListMotor from 'pages/Motor';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 function App() {
-  const { loading, user } = useAuthStateChange();
+  const { loading } = useAuthStateChange();
   if (loading) return <div>Loading...</div>;
-  console.log(user);
   return (
     <Routes>
       <Route element={<ProtectedRoutes />}>
