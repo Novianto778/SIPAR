@@ -2,10 +2,10 @@ import TextField from 'components/form/TextField';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import useSignIn from 'hooks/useSignIn';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ROUTES } from 'constants/routes';
-import { useEffect } from 'react';
+import useLogin from 'hooks/useLogin';
+import LoadingButton from 'components/LoadingButton';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -15,7 +15,7 @@ const loginSchema = z.object({
 type loginTypes = z.infer<typeof loginSchema>;
 
 const Login = () => {
-  const { user, signIn, error } = useSignIn();
+  const { mutateAsync, isLoading, error, isError } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -29,14 +29,8 @@ const Login = () => {
   const redirectPath = location?.state || ROUTES.HOME;
 
   const onSubmit = async (data: loginTypes) => {
-    signIn(data);
+    await mutateAsync(data, { onSuccess: () => navigate(redirectPath) });
   };
-
-  useEffect(() => {
-    if (user) {
-      navigate(redirectPath);
-    }
-  }, [user, redirectPath, navigate]);
 
   return (
     <section className="h-screen">
@@ -53,13 +47,13 @@ const Login = () => {
             <h2 className="text-center text-xl mb-8 font-semibold">
               Login to Your Account
             </h2>
-            {error && (
+            {isError && (
               <div
                 className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
                 role="alert"
               >
                 <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline">{error.message}</span>
+                <span className="block sm:inline"> {error as string}</span>
               </div>
             )}
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -100,14 +94,18 @@ const Login = () => {
                 </a>
               </div>
 
-              <button
-                type="submit"
-                className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
-                data-mdb-ripple="true"
-                data-mdb-ripple-color="light"
-              >
-                Sign in
-              </button>
+              {isLoading ? (
+                <LoadingButton />
+              ) : (
+                <button
+                  type="submit"
+                  className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                  data-mdb-ripple="true"
+                  data-mdb-ripple-color="light"
+                >
+                  Sign in
+                </button>
+              )}
             </form>
           </div>
         </div>

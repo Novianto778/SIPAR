@@ -1,4 +1,5 @@
 import { ReactComponent as Motor } from 'assets/icon/motor.svg';
+import { ReactComponent as Beat } from 'assets/icon/honda-beat.svg';
 import { ReactComponent as Transaction } from 'assets/icon/transaction.svg';
 import { ReactComponent as Calculator } from 'assets/icon/calculator.svg';
 import StatisticCard from './components/StatisticCard';
@@ -19,7 +20,7 @@ const orders = [
     name: 'Reiner Braunn',
     motor: 'Honda Beat - AB 1234 CD',
     total: 'Rp 145.000',
-    status: 'preparing',
+    status: 'pending',
   },
   {
     name: 'Levi Ackerman',
@@ -51,7 +52,7 @@ const Dashboard = () => {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 h-full gap-x-4">
       <div className="col-span-2">
-        <section className="px-6 py-4">
+        <section className="lg:px-6 py-4">
           <h2 className="text-lg font-semibold">Statistik</h2>
           <div className="flex flex-wrap gap-4 items-center mt-4 justify-between">
             <StatisticCard title="Motor On-Going" value={100} Icon={Motor} />
@@ -67,8 +68,8 @@ const Dashboard = () => {
             />
           </div>
         </section>
-        <section className="mt-8 w-full">
-          <div className="p-6 bg-white rounded-lg min-w-[600px] shadow">
+        <section className="mt-8 w-full lg:px-6">
+          <div className="p-6 bg-white rounded-lg shadow ">
             <div className="flex justify-between items-center pb-4">
               <h2 className="text-xl font-semibold leading-loose text-black">
                 Order Report
@@ -82,7 +83,7 @@ const Dashboard = () => {
           </div>
         </section>
       </div>
-      <div className="col-span-2 lg:col-span-1 rounded max-h-72 shadow-sm">
+      <div className="col-span-2 lg:col-span-1 rounded max-h-72 shadow-sm mt-4 lg:mt-0">
         <div className="w-full h-full bg-white p-4 ">
           <div className="flex items-center justify-between pb-4 border-b-2 border-gray-200">
             <h2 className="font-semibold">Motor Kembali</h2>
@@ -102,9 +103,9 @@ const Dashboard = () => {
             plat="AB 1234 CD"
           />
           <MotorKembaliCard
-            Icon={Motor}
+            Icon={Beat}
             nama="Nurul Hidayah"
-            jenis_motor="Scoopy"
+            jenis_motor="Beat"
             plat="AB 1234 CD"
           />
           <MotorKembaliCard

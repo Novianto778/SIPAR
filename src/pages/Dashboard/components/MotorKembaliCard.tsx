@@ -1,6 +1,6 @@
 import React from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
-import { GrView } from 'react-icons/gr';
+import { FiInfo } from 'react-icons/fi';
 
 interface Props {
   Icon: React.FC<React.SVGProps<SVGSVGElement>>;
@@ -27,7 +27,7 @@ const MotorKembaliCard: React.FC<Props> = ({
         </div>
         <div className="flex items-center gap-x-6 ml-auto">
           <BsFillCheckCircleFill className="w-6 h-6 text-green-500 cursor-pointer" />
-          <GrView className="w-6 h-6 text-gray-400 cursor-pointer" />
+          <FiInfo className="w-6 h-6 text-gray-400 cursor-pointer" />
         </div>
       </div>
     </div>

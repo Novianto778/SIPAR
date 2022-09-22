@@ -1,5 +1,5 @@
 import { logout } from 'lib/supabase';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BiBell } from 'react-icons/bi';
 import Avatar from '../assets/icon/avatar.svg';
 
@@ -24,7 +24,11 @@ const Navbar = () => {
             <BiBell className="w-6 h-6" />
             <div className="absolute top-0 right-0.5 w-2 h-2 rounded-full bg-orange-500"></div>
           </div>
-          <div className="relative">
+          <div
+            className="relative"
+            tabIndex={0}
+            onBlur={() => setIsPopover(false)}
+          >
             <img
               src={Avatar}
               alt="avatar"
