@@ -11,7 +11,7 @@ const ListMotor = () => {
     <>
       <div className="flex items-center justify-between mb-20">
         <h1 className="text-2xl font-bold">List Motor</h1>
-        <Link to='add' className="btn btn-blue">
+        <Link to="add" className="btn btn-blue">
           Tambah
         </Link>
       </div>

@@ -2,16 +2,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import TextField from 'components/form/TextField';
 import { ROUTES } from 'constants/routes';
-import { insertDataToTable, uploadImage } from 'lib/supabase';
-import { useState } from 'react';
+import { deleteImage, updateDataToTable, uploadImage } from 'lib/supabase';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Motor, motorSchema } from 'types/motor';
 import { v4 as uuidv4 } from 'uuid';
+import useImage from './hooks/useImage';
+import useMotorById from './hooks/useMotorById';
 
-const AddMotor = () => {
+const EditMotor = () => {
   const navigate = useNavigate();
-  const [image, setImage] = useState<string | ArrayBuffer | null>('');
+  const { id } = useParams();
+  const { data: motor, isLoading } = useMotorById(id!);
+  const { image, setImage } = useImage(motor?.img as string);
+  const [isNewImage, setIsNewImage] = useState(false);
   const {
     register,
     handleSubmit,
@@ -22,14 +27,18 @@ const AddMotor = () => {
     resolver: zodResolver(motorSchema),
   });
   const queryClient = useQueryClient();
-  const { mutateAsync } = useMutation(addMotorHandler, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['motor']).then(() => {
-        reset();
-        navigate(ROUTES.LIST_MOTOR);
-      });
+
+  const { mutateAsync, isSuccess } = useMutation(editMotorHandler, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['motor']);
+      reset();
+      navigate(ROUTES.LIST_MOTOR);
     },
   });
+
+  if (isSuccess) {
+    queryClient.refetchQueries(['motor']);
+  }
 
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
@@ -47,23 +56,37 @@ const AddMotor = () => {
     }
   };
 
-  async function addMotorHandler(data: Motor) {
+  async function editMotorHandler(data: Motor) {
     let fileName;
     if (data.img instanceof File) {
       const file = data.img;
       const fileExt = file.name.split('.').pop();
       fileName = `${uuidv4()}.${fileExt}`;
-      uploadImage('motor', fileName, file);
+      if (isNewImage) {
+        await uploadImage('motor', fileName, file);
+        await deleteImage('motor', motor?.img as string);
+      }
     } else {
       fileName = data.img;
     }
     const newData = { ...data, img: fileName };
-    insertDataToTable('motor', newData);
+    await updateDataToTable('motor', newData, 'id_motor', id!);
   }
 
   const onSubmit: SubmitHandler<Motor> = async (data: Motor) => {
     await mutateAsync(data);
   };
+
+  useEffect(() => {
+    if (motor) {
+      setValue('tipe', motor.tipe);
+      setValue('harga', motor.harga.toString());
+      setValue('img', motor.img);
+      setValue('stok', motor.stok.toString());
+      setValue('cc', motor.cc.toString());
+    }
+  }, [motor, setValue]);
+  if (isLoading) return <div>Loading...</div>;
   return (
     <>
       <h1 className="text-xl font-semibold">Tambah Motor</h1>
@@ -117,6 +140,7 @@ const AddMotor = () => {
                     setValue('img', e.target.files![0], {
                       shouldValidate: true,
                     });
+                    setIsNewImage(true);
                   }}
                 />
               </label>
@@ -169,4 +193,4 @@ const AddMotor = () => {
   );
 };
 
-export default AddMotor;
+export default EditMotor;

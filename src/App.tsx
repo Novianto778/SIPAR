@@ -8,6 +8,7 @@ import Dashboard from 'pages/Dashboard';
 import ListMotor from 'pages/Motor';
 import 'react-loading-skeleton/dist/skeleton.css';
 import AddMotor from 'pages/Motor/AddMotor';
+import EditMotor from 'pages/Motor/EditMotor';
 
 function App() {
   const { loading } = useAuthStateChange();
@@ -20,6 +21,7 @@ function App() {
           <Route path={ROUTES.LIST_MOTOR}>
             <Route index element={<ListMotor />} />
             <Route path="add" element={<AddMotor />} />
+            <Route path="edit/:id" element={<EditMotor />} />
           </Route>
           <Route path={ROUTES.TRANSACTION} element={<div>Transaksi</div>} />
           <Route path={ROUTES.SERVICE} element={<div>Data Service</div>} />
