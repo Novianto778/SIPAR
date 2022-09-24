@@ -24,6 +24,7 @@ const useAuthStateChange = () => {
     return () => {
       authListener?.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { user, session, loading };

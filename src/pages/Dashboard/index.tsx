@@ -8,6 +8,7 @@ import MotorKembaliCard from './components/MotorKembaliCard';
 import { Link } from 'react-router-dom';
 import CircularChart from './components/CircularChart';
 import TransactionReport from './components/TransactionReport';
+import { formatUang } from 'utils/formatUang';
 
 const orders = [
   {
@@ -52,7 +53,7 @@ const Dashboard = () => {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 h-full gap-x-4">
       <div className="col-span-2">
-        <section className="lg:px-6 py-4">
+        <section className="lg:px-2 py-4">
           <h2 className="text-lg font-semibold">Statistik</h2>
           <div className="flex flex-wrap gap-4 items-center mt-4 justify-between">
             <StatisticCard title="Motor On-Going" value={100} Icon={Motor} />
@@ -63,12 +64,12 @@ const Dashboard = () => {
             />
             <StatisticCard
               title="Total Pendapatan"
-              value={4000000}
+              value={formatUang(4000000)}
               Icon={Calculator}
             />
           </div>
         </section>
-        <section className="mt-8 w-full lg:px-6">
+        <section className="mt-8 w-full lg:px-2">
           <div className="p-6 bg-white rounded-lg shadow ">
             <div className="flex justify-between items-center pb-4">
               <h2 className="text-xl font-semibold leading-loose text-black">

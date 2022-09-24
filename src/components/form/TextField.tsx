@@ -6,30 +6,48 @@ interface TextFieldProps {
   placeholder?: string;
   autoFocus?: boolean;
   name?: string;
-  type?: 'email' | 'password' | 'text';
   textarea?: boolean;
+  type?: string;
   label?: string;
   text?: 'xs' | 'sm' | 'base' | 'lg';
   spacing?: number;
   error?: string;
+  width?: 'full' | '2/3' | '1/2' | '1/3' | '1/4';
 }
 
 const TextField = React.forwardRef<InputElement, TextFieldProps>(
   (
-    { error, text = 'base', spacing, label, textarea = false, ...rest },
+    {
+      error,
+      width = 'full',
+      text = 'base',
+      spacing,
+      label,
+      textarea = false,
+      ...rest
+    },
     ref
   ) => {
     const InputElement = textarea ? 'textarea' : 'input';
+    const widthClass = {
+      full: 'md:w-full',
+      '2/3': 'md:w-2/3',
+      '1/2': 'md:w-1/2',
+      '1/3': 'md:w-1/3',
+      '1/4': 'md:w-1/4',
+    };
     return (
-      <div className={`${spacing && 'mb-' + spacing}`}>
+      <div className={`form-container${spacing ? ' mb-' + spacing : ''}`}>
         {label && (
-          <label className="mb-2 inline-block font-medium" htmlFor={label}>
+          <label className="mb-2 block font-medium" htmlFor={label}>
             {label}
           </label>
         )}
         <InputElement
           ref={ref as any}
-          className={`rounded-md w-full border border-gray-400 transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none px-4 py-2 ${
+          className={`rounded-md w-full ${
+            widthClass[width]
+          } border border-gray-400 transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none px-4 py-2 ${
             textarea ? 'h-32' : ''
           } text-${text}`}
           {...rest}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import useMotor from './hooks/useMotor';
 import MotorCard from './MotorCard';
 
@@ -10,7 +11,9 @@ const ListMotor = () => {
     <>
       <div className="flex items-center justify-between mb-20">
         <h1 className="text-2xl font-bold">List Motor</h1>
-        <button className="btn btn-blue">Tambah</button>
+        <Link to='add' className="btn btn-blue">
+          Tambah
+        </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
         {data?.map((item, index) => (

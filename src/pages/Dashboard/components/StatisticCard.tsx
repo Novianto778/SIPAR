@@ -2,7 +2,7 @@ import React from 'react';
 
 interface Props {
   title: string;
-  value: number;
+  value: number | string;
   Icon: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 

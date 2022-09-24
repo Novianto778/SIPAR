@@ -1,4 +1,4 @@
-import { ApiError } from '@supabase/supabase-js';
+import { ApiError, User } from '@supabase/supabase-js';
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from 'lib/supabaseClient';
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 interface Api {
-  user?: unknown;
+  user?: User | null;
   error: ApiError | null;
 }
 

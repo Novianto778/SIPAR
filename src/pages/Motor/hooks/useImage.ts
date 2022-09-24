@@ -6,9 +6,7 @@ export default function useImage(img: string) {
 
   useEffect(() => {
     const getImage = async () => {
-      const { data } = await supabase.storage
-        .from('public/motor')
-        .download(img);
+      const { data } = await supabase.storage.from('motor').download(img);
       const url = URL.createObjectURL(data as Blob);
       setUrl(url);
     };

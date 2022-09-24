@@ -14,7 +14,7 @@ const SidebarLink: React.FC<Props> = ({ name, Icon, path }) => {
     <Link to={path} className="group">
       <div
         className={`sidebar-btn ${
-          pathname === path &&
+          pathname.includes(path) &&
           'bg-white text-red-500 shadow-xl duration-300 md:h-14 md:w-14 md:-translate-y-0 md:translate-x-8'
         }`}
       >
