@@ -16,5 +16,5 @@ const getMotorById = async (id: string) => {
 };
 
 export default function useMotorById(id: string) {
-  return useQuery(['motor', id], () => getMotorById(id), { enabled: !!id });
+  return useQuery(['motor', id], () => getMotorById(id));
 }

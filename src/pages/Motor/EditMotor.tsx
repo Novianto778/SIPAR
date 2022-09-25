@@ -79,11 +79,11 @@ const EditMotor = () => {
 
   useEffect(() => {
     if (motor) {
-      setValue('tipe', motor.tipe);
-      setValue('harga', motor.harga.toString());
-      setValue('img', motor.img);
-      setValue('stok', motor.stok.toString());
-      setValue('cc', motor.cc.toString());
+      setValue('tipe', motor?.tipe);
+      setValue('harga', motor?.harga?.toString());
+      setValue('img', motor?.img);
+      setValue('stok', motor?.stok?.toString());
+      setValue('cc', motor?.cc?.toString());
     }
   }, [motor, setValue]);
   if (isLoading) return <div>Loading...</div>;

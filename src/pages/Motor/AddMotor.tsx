@@ -23,11 +23,10 @@ const AddMotor = () => {
   });
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation(addMotorHandler, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['motor']).then(() => {
-        reset();
-        navigate(ROUTES.LIST_MOTOR);
-      });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['motor']);
+      reset();
+      navigate(ROUTES.LIST_MOTOR);
     },
   });
 
@@ -53,17 +52,22 @@ const AddMotor = () => {
       const file = data.img;
       const fileExt = file.name.split('.').pop();
       fileName = `${uuidv4()}.${fileExt}`;
-      uploadImage('motor', fileName, file);
+      await uploadImage('motor', fileName, file);
     } else {
       fileName = data.img;
     }
     const newData = { ...data, img: fileName };
-    insertDataToTable('motor', newData);
+    await insertDataToTable('motor', newData);
   }
 
   const onSubmit: SubmitHandler<Motor> = async (data: Motor) => {
-    await mutateAsync(data);
+    await mutateAsync(data, {
+      onSuccess: () => {
+        queryClient.refetchQueries(['motor']);
+      },
+    });
   };
+
   return (
     <>
       <h1 className="text-xl font-semibold">Tambah Motor</h1>
