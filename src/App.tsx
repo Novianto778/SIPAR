@@ -9,6 +9,9 @@ import ListMotor from 'pages/Motor';
 import 'react-loading-skeleton/dist/skeleton.css';
 import AddMotor from 'pages/Motor/AddMotor';
 import EditMotor from 'pages/Motor/EditMotor';
+import Transaksi from 'pages/Transaksi';
+import TransaksiDetail from 'pages/Transaksi/TransaksiDetail';
+import TambahTransaksi from 'pages/Transaksi/TambahTransaksi';
 
 function App() {
   const { loading } = useAuthStateChange();
@@ -23,7 +26,11 @@ function App() {
             <Route path="add" element={<AddMotor />} />
             <Route path="edit/:id" element={<EditMotor />} />
           </Route>
-          <Route path={ROUTES.TRANSACTION} element={<div>Transaksi</div>} />
+          <Route path={ROUTES.TRANSACTION}>
+            <Route index element={<Transaksi />} />
+            <Route path="add" element={<TambahTransaksi />} />
+            <Route path="detail/:id" element={<TransaksiDetail />} />
+          </Route>
           <Route path={ROUTES.SERVICE} element={<div>Data Service</div>} />
           <Route path={ROUTES.REPORT} element={<div>Laporan Bulanan</div>} />
         </Route>

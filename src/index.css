@@ -29,4 +29,16 @@
   .btn-blue {
     @apply bg-blue-500 text-white;
   }
+
+  .table-dropdown-menu {
+    @apply cursor-pointer flex space-x-2 items-center hover:bg-blue-700 hover:text-white duration-300 px-4 py-2 border-b-2;
+  }
+
+  .table-simple {
+    @apply px-6 py-3 text-xs font-bold text-gray-500 uppercase whitespace-nowrap;
+  }
+
+  .table-simple-row {
+    @apply px-6 py-4 text-sm text-gray-800 whitespace-nowrap;
+  }
 }

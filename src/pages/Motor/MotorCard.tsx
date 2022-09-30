@@ -41,19 +41,19 @@ const MotorCard = ({ item }: Props) => {
                 {item.tipe}
               </h3>
               <p className="text-orange-500 font-semibold text-xl">
-                Rp <span>{formatUang(item.harga)}</span>
+                <span>{formatUang(item.harga)}</span>
               </p>
             </div>
           </div>
           <div className="absolute space-x-4 opacity-0 group-hover:opacity-100 flex items-center justify-center top-0 left-0 w-full h-full bg-gray-400/30 duration-300">
             <Link
               to={`edit/${item.id_motor}`}
-              className="btn border-2 border-black group-hover:z-30"
+              className="btn bg-blue-300 group-hover:z-30"
             >
               Edit
             </Link>
             <button
-              className="btn border-2 border-red-500 text-red-500 group-hover:z-30"
+              className="btn bg-red-300 text-white group-hover:z-30"
               onClick={handleDelete}
             >
               Delete

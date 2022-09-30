@@ -9,7 +9,7 @@ import LoadingButton from 'components/LoadingButton';
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().min(6),
 });
 
 type loginTypes = z.infer<typeof loginSchema>;

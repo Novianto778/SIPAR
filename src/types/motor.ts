@@ -5,7 +5,7 @@ export const motorSchema = z.object({
   tipe: z.string().min(1, { message: 'Tipe harus diisi' }),
   cc: z
     .string()
-    .transform((val) => parseInt(val))
+    .transform((val) => (val ? parseInt(val) : 0))
     .optional(),
   harga: z
     .string()

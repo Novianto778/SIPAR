@@ -16,6 +16,14 @@ import {
 } from '@heroicons/react/solid';
 import { Button, PageButton } from 'components/table/Button';
 import { SortIcon, SortUpIcon, SortDownIcon } from 'components/table/Icon';
+import { classNames } from 'components/table/Utils';
+import TableDropdown from './TableDropdown';
+import moment from 'moment';
+import 'moment/locale/id';
+import { formatNama } from 'utils/formatNama';
+import { formatUang } from 'utils/formatUang';
+import { useNavigate } from 'react-router-dom';
+import Datepicker from 'components/form/DatePicker';
 
 // Define a default UI for filtering
 function GlobalFilter(props) {
@@ -60,10 +68,10 @@ export function SelectColumnFilter({
 
   // Render a multi-select box
   return (
-    <label className="flex gap-x-2 items-baseline mr-4">
+    <label className="flex gap-x-2 items-baseline">
       <span className="text-gray-700">{render('Header')}: </span>
       <select
-        className="rounded-md border-gray-600 shadow focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         name={id}
         id={id}
         value={filterValue}
@@ -82,11 +90,19 @@ export function SelectColumnFilter({
   );
 }
 
-export function KodeMKCell({ value }) {
+export function StatusPill({ value }) {
+  const status = value ? value.toLowerCase() : 'unknown';
+
   return (
-    <div className="flex items-center">
-      <div className="text-sm font-medium text-gray-900">{value}</div>
-    </div>
+    <span
+      className={classNames(
+        'px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm',
+        status.startsWith('completed') ? 'bg-green-100 text-green-800' : null,
+        status.startsWith('pending') ? 'bg-red-100 text-red-800' : null
+      )}
+    >
+      {status}
+    </span>
   );
 }
 
@@ -98,22 +114,7 @@ const tableHooks = (hooks) => {
       Header: 'Edit',
       Cell: (props) => {
         const { row, onOpenDeleteModal, onOpenEditModal } = props;
-        return (
-          <div className="flex items-center gap-x-2">
-            <button
-              className="px-4 py-2 bg-blue-400 rounded text-sm text-white font-medium"
-              onClick={() => onOpenEditModal(row.values.id)}
-            >
-              Edit
-            </button>
-            <button
-              className="px-4 py-2 bg-red-500 rounded text-sm text-white font-medium"
-              onClick={() => onOpenDeleteModal(row.values.id)}
-            >
-              Delete
-            </button>
-          </div>
-        );
+        return <TableDropdown id={row.original.id_transaksi} />;
       },
     },
   ]);
@@ -125,6 +126,10 @@ interface Props {
   onOpenDeleteModal?: (id: number) => void;
   onOpenAddModal?: (id: number) => void;
   onOpenEditModal?: (id: number) => void;
+  startDate: Date;
+  endDate: Date;
+  setStartDate?: SetStateAction<Date>;
+  setEndDate?: SetStateAction<Date>;
 }
 
 function Table({
@@ -133,6 +138,10 @@ function Table({
   onOpenDeleteModal,
   onOpenAddModal,
   onOpenEditModal,
+  startDate,
+  endDate,
+  setStartDate,
+  setEndDate,
 }: Props) {
   const {
     getTableProps,
@@ -155,9 +164,6 @@ function Table({
     {
       columns,
       data,
-      onOpenDeleteModal,
-      onOpenAddModal,
-      onOpenEditModal,
     },
     useFilters,
     useGlobalFilter,
@@ -165,25 +171,24 @@ function Table({
     usePagination,
     tableHooks
   );
+  const navigate = useNavigate();
 
   // Render the UI for your table
   return (
     <>
-      <div className="sm:flex flex-col sm:gap-x-2">
-        <div className="flex items-center justify-between">
-          <GlobalFilter
-            preGlobalFilteredRows={preGlobalFilteredRows}
-            globalFilter={state.globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-          <button
-            className="btn px-6 py-2 bg-green-600 rounded font-semibold text-white text-sm"
-            onClick={onOpenAddModal}
-          >
-            Add
-          </button>
+      <div className="sm:flex justify-between items-center sm:gap-x-2">
+        <GlobalFilter
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+        <div className="flex gap-x-2 items-center">
+          <Datepicker selectedDate={startDate} setSelectedDate={setStartDate} />
+          <span className="text-xs">to:</span>
+          <Datepicker selectedDate={endDate} setSelectedDate={setEndDate} />
         </div>
-        <div className="grid grid-cols-2 gap-4 justify-between mt-4">
+
+        <div>
           {headerGroups.map((headerGroup) =>
             headerGroup.headers.map((column) => {
               return column.Filter ? (
@@ -205,14 +210,15 @@ function Table({
                 className="min-w-full divide-y divide-gray-200"
               >
                 <thead className="bg-gray-50">
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroups.map((headerGroup, i) => (
+                    <tr {...headerGroup.getHeaderGroupProps()} key={i}>
                       {headerGroup.headers
-                        .filter((col) => col.show === true)
-                        .map((column) => (
+                        .filter((col) => !col?.hidden)
+                        .map((column, i) => (
                           // Add the sorting props to control sorting. For this example
                           // we can add them into the header props
                           <th
+                            key={i}
                             scope="col"
                             className="group px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             {...column.getHeaderProps(
@@ -248,13 +254,17 @@ function Table({
                     prepareRow(row);
                     return (
                       <tr
-                        className={`${i % 2 === 0 && 'bg-gray-100'}`}
+                        key={i}
+                        className={`${i % 2 === 0 && 'bg-gray-200'}`}
+                        onDoubleClick={() =>
+                          navigate('detail/' + row.original.id_transaksi)
+                        }
                         {...row.getRowProps()}
                       >
                         {row.cells.map((cell) => {
-                          if (cell.column.show === false) {
-                            return null;
-                          }
+                          // if (cell.column.show === false) {
+                          //   return null;
+                          // }
 
                           if (cell.column.Header === 'NO') {
                             return (
@@ -265,6 +275,30 @@ function Table({
                                 <div className="text-sm text-gray-900">
                                   {i + 1}
                                 </div>
+                              </td>
+                            );
+                          }
+
+                          if (cell.column.Header === 'Nama') {
+                            return (
+                              <td className="px-2 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                {formatNama(cell.value)}
+                              </td>
+                            );
+                          }
+
+                          if (cell.column.tanggal === true) {
+                            return (
+                              <td className="px-2 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                {moment(cell.value).format('DD MMMM YYYY')}
+                              </td>
+                            );
+                          }
+
+                          if (cell.column.uang === true) {
+                            return (
+                              <td className="px-2 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                {formatUang(cell.value)}
                               </td>
                             );
                           }

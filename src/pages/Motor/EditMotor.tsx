@@ -89,7 +89,7 @@ const EditMotor = () => {
   if (isLoading) return <div>Loading...</div>;
   return (
     <>
-      <h1 className="text-xl font-semibold">Tambah Motor</h1>
+      <h2 className="text-xl font-semibold">Tambah Motor</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-x-12 gap-y-10 py-4 md:flex-row flex-col">
           <div className="flex-[2]">

@@ -1,9 +1,12 @@
 import { logout } from 'lib/supabase';
+import moment from 'moment';
 import { useState } from 'react';
 import { BiBell } from 'react-icons/bi';
 import Avatar from '../assets/icon/avatar.svg';
+import 'moment/locale/id';
 
 const Navbar = () => {
+  const id = moment().locale('id');
   const [isPopover, setIsPopover] = useState<boolean>(false);
 
   const handleTogglePopover = () => {
@@ -14,9 +17,9 @@ const Navbar = () => {
     <nav>
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold">Dashboard</h1>
+          <h2 className="text-lg font-semibold">Dashboard</h2>
           <h6 className="text-sm font-medium text-gray-600">
-            22 September 2022
+            {id.format('LL')}
           </h6>
         </div>
         <div className="flex items-center space-x-4">

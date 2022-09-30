@@ -12,7 +12,13 @@ module.exports = {
           purple: '#9290FE',
         },
       },
+      zIndex: {
+        '100': '100',
+      },
+      maxWidth: {
+        dashboard: 'calc(100vw - 80px)',
+      },
     },
   },
-  plugins: [require('tailwind-scrollbar-hide')],
+  plugins: [require('tailwind-scrollbar-hide'), require('@tailwindcss/forms')],
 };
