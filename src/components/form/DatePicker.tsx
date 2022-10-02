@@ -24,7 +24,9 @@ const Datepicker = forwardRef((props: Props, ref) => {
   const [dayCount, setDayCount] = useState([]);
   const [blankDays, setBlankDays] = useState([]);
   const [showDatepicker, setShowDatepicker] = useState(false);
-  const [datepickerHeaderDate, setDatepickerHeaderDate] = useState(new Date());
+  const [datepickerHeaderDate, setDatepickerHeaderDate] = useState(
+    new Date(selectedDate)
+  );
   // const [selectedDate, setSelectedDate] = useState(
   //   props.currValue || new Date()
   // );

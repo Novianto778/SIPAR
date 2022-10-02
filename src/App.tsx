@@ -15,6 +15,7 @@ import TambahTransaksi from 'pages/Transaksi/TambahTransaksi';
 import EditTransaksi from 'pages/Transaksi/EditTransaksi';
 import Service from 'pages/Service';
 import TambahService from 'pages/Service/TambahService';
+import EditService from 'pages/Service/EditService';
 
 function App() {
   const { loading } = useAuthStateChange();
@@ -38,6 +39,7 @@ function App() {
           <Route path={ROUTES.SERVICE}>
             <Route index element={<Service />} />
             <Route path="add" element={<TambahService />} />
+            <Route path="edit/:id" element={<EditService />} />
           </Route>
           <Route path={ROUTES.REPORT} element={<div>Laporan Bulanan</div>} />
         </Route>

@@ -15,8 +15,11 @@ const Transaksi = () => {
   const newData = React.useMemo(() => {
     return data
       ?.filter((item) => {
-        const date = new Date(item.tanggal);
-        return date >= startDate && date <= endDate;
+        const date = new Date(item.tanggal_service).setHours(0, 0, 0, 0);
+        return (
+          date >= startDate.setHours(0, 0, 0, 0) &&
+          date <= endDate.setHours(0, 0, 0, 0)
+        );
       })
       .map((item: any) => {
         return {

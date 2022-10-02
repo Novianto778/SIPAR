@@ -13,7 +13,7 @@ export const serviceInputSchema = z.object({
 export const serviceSchema = serviceInputSchema.extend({
   id_service: z.number().optional(),
   tanggal_service: z.date(),
-
+  status: z.enum(['Completed', 'Pending']),
   tanggal_kembali: z.date().optional(),
   total_harga: z.number().optional(),
 });

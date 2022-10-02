@@ -2,22 +2,29 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import TextField from 'components/form/TextField';
 import useMotor from 'pages/Motor/hooks/useMotor';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
+import { useParams } from 'react-router-dom';
 import ReactSelect from 'react-select';
 import { Service, ServiceInput, serviceInputSchema } from 'types/service';
-import useAddService from './hooks/useAddService';
+import useEditService from './hooks/useEditService';
+import useGetServiceById from './hooks/useGetServiceById';
 
 type OptionType = {
   label: string;
   value: number;
 };
 
-const TambahService = () => {
+const EditService = () => {
+  const { id } = useParams();
   const queryClient = useQueryClient();
   const { data, isLoading } = useMotor();
-  const { mutate, isSuccess } = useAddService();
+  const { data: service, isLoading: isLoadingService } = useGetServiceById(
+    parseInt(id!)
+  );
+
+  const { mutate } = useEditService();
   const options: OptionType[] | [] = useMemo(
     () =>
       data?.map((item) => ({
@@ -31,29 +38,39 @@ const TambahService = () => {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<ServiceInput>({ resolver: zodResolver(serviceInputSchema) });
-
-  if (isSuccess) {
-    queryClient.refetchQueries(['service']);
-  }
 
   const onSubmit = async (data: ServiceInput) => {
     const newData: Service = {
       ...data,
+      id_service: service?.id_service,
       id_motor: data.id_motor.value,
-      tanggal_service: new Date(),
+      tanggal_service: service?.tanggal_service!,
     };
 
     mutate(newData, {
       onSuccess: () => {
-        toast.success('Berhasil menambahkan data service');
+        toast.success('Berhasil mengedit data service');
         queryClient.refetchQueries(['service']);
       },
     });
   };
 
-  if (isLoading) {
+  useEffect(() => {
+    if (service) {
+      setValue('id_motor', {
+        value: service.motor.id_motor!,
+        label: service.motor.tipe,
+      });
+      setValue('plat_motor', service.plat_motor);
+      setValue('total_km', service.total_km);
+      setValue('deskripsi', service.deskripsi);
+    }
+  }, [service, setValue]);
+
+  if (isLoading || isLoadingService) {
     return <div>Loading...</div>;
   }
 
@@ -111,4 +128,4 @@ const TambahService = () => {
   );
 };
 
-export default TambahService;
+export default EditService;

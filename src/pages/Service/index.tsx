@@ -22,6 +22,10 @@ const Service = () => {
         accessor: 'plat_motor',
       },
       {
+        Header: 'Tipe Motor',
+        accessor: 'tipe_motor',
+      },
+      {
         Header: 'Tanggal',
         accessor: 'tanggal',
         tanggal: true,
@@ -46,6 +50,23 @@ const Service = () => {
     []
   );
 
+  const newData = useMemo(() => {
+    return data
+      ?.filter((item) => {
+        const date = new Date(item.tanggal_service).setHours(0, 0, 0, 0);
+        return (
+          date >= startDate.setHours(0, 0, 0, 0) &&
+          date <= endDate.setHours(0, 0, 0, 0)
+        );
+      })
+      .map((item: any) => {
+        return {
+          ...item,
+          tipe_motor: item.motor.tipe,
+        };
+      });
+  }, [data, startDate, endDate]);
+
   useEffect(() => {
     if (endDate < startDate) {
       setStartDate(endDate);
@@ -68,7 +89,7 @@ const Service = () => {
           <div className="overflow-hidden max-w-dashboard md:w-full h-full">
             <Table
               columns={column}
-              data={data as any | []}
+              data={newData as any | []}
               startDate={startDate}
               endDate={endDate}
               setStartDate={setStartDate}
