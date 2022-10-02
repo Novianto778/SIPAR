@@ -22,7 +22,6 @@ import moment from 'moment';
 import 'moment/locale/id';
 import { formatNama } from 'utils/formatNama';
 import { formatUang } from 'utils/formatUang';
-import { useNavigate } from 'react-router-dom';
 import Datepicker from 'components/form/DatePicker';
 
 // Define a default UI for filtering
@@ -114,7 +113,7 @@ const tableHooks = (hooks) => {
       Header: 'aksi',
       Cell: (props) => {
         const { row } = props;
-        return <TableDropdown id={row.original.id_transaksi} />;
+        return <TableDropdown id={row.original.id_service} />;
       },
     },
   ]);
@@ -123,11 +122,8 @@ const tableHooks = (hooks) => {
 interface Props {
   columns: any[];
   data: any[];
-  onOpenDeleteModal?: (id: number) => void;
-  onOpenAddModal?: (id: number) => void;
-  onOpenEditModal?: (id: number) => void;
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
   setStartDate?: SetStateAction<Date>;
   setEndDate?: SetStateAction<Date>;
 }
@@ -168,7 +164,6 @@ function Table({
     usePagination,
     tableHooks
   );
-  const navigate = useNavigate();
 
   // Render the UI for your table
   return (
@@ -253,9 +248,6 @@ function Table({
                       <tr
                         key={i}
                         className={`${i % 2 === 0 && 'bg-gray-200'}`}
-                        onDoubleClick={() =>
-                          navigate('detail/' + row.original.id_transaksi)
-                        }
                         {...row.getRowProps()}
                       >
                         {row.cells.map((cell) => {
@@ -298,15 +290,26 @@ function Table({
                             );
                           }
 
-                          if (cell.column.uang === true) {
-                            return (
-                              <td
-                                className="px-2 py-4 text-sm text-gray-900 whitespace-nowrap"
-                                key={cell.column.id}
-                              >
-                                {formatUang(cell.value)}
-                              </td>
-                            );
+                          if (cell.column?.uang === true) {
+                            if (cell.value === null) {
+                              return (
+                                <td
+                                  className="px-2 py-4 text-sm text-gray-900 whitespace-nowrap"
+                                  key={cell.column.id}
+                                >
+                                  -
+                                </td>
+                              );
+                            } else {
+                              return (
+                                <td
+                                  className="px-2 py-4 text-sm text-gray-900 whitespace-nowrap"
+                                  key={cell.column.id}
+                                >
+                                  {formatUang(cell.value)}
+                                </td>
+                              );
+                            }
                           }
 
                           return (

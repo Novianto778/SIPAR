@@ -10,6 +10,10 @@ const ProtectedRoutes = () => {
     return <Navigate to={ROUTES.HOME} />;
   }
 
+  if (location.pathname === ROUTES.LOGIN && user) {
+    return <Navigate to={ROUTES.HOME} />;
+  }
+
   return user ? <Outlet /> : <Navigate to="/login" state={location.pathname} />;
 };
 
