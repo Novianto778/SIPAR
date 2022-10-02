@@ -3,10 +3,28 @@ import { useParams } from 'react-router-dom';
 import useTransaksiDetail from '../hooks/useTransaksiDetail';
 import 'moment/locale/id';
 import { formatUang } from 'utils/formatUang';
+import { TransaksiDetail as TransaksiDetailType } from 'types/transaksi';
+import { Motor } from 'types/motor';
+import { useState } from 'react';
+import PerpanjangModal from './PerpanjangModal';
+import useGetTransaksiById from '../hooks/useGetTransaksiById';
+
+type Item = TransaksiDetailType & {
+  motor: Motor;
+};
 
 const TransaksiDetail = () => {
   const { id } = useParams();
   const { data, isLoading } = useTransaksiDetail(id!);
+  const { data: transaksi } = useGetTransaksiById(parseInt(id!));
+  const [openPerpanjanganModal, setOpenPerpanjanganModal] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const handleOpenPerpanjanganModal = (id: number) => {
+    setOpenPerpanjanganModal(true);
+    setSelectedId(id);
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -46,7 +64,7 @@ const TransaksiDetail = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {data?.map((item: any, index: number) => (
+                  {data?.map((item: Item, index: number) => (
                     <tr>
                       <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">
                         {index + 1}
@@ -55,7 +73,7 @@ const TransaksiDetail = () => {
                       <td className="table-simple-row">{item.plat_motor}</td>
                       <td className="table-simple-row">{item.lama_sewa}</td>
                       <td className="table-simple-row">
-                        {formatUang(item.denda)}
+                        {formatUang(item.denda!)}
                       </td>
                       <td className="table-simple-row">
                         {item.tanggal_mulai
@@ -76,9 +94,16 @@ const TransaksiDetail = () => {
                         <button className="text-green-500 hover:text-green-700">
                           Edit
                         </button>
-                        <button className="text-red-500 hover:text-red-700">
-                          Delete
-                        </button>
+                        {transaksi?.status === 'Pending' && (
+                          <button
+                            className="text-blue-500 hover:text-blue-700"
+                            onClick={() =>
+                              handleOpenPerpanjanganModal(item.id!)
+                            }
+                          >
+                            Perpanjang
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -88,6 +113,12 @@ const TransaksiDetail = () => {
           </div>
         </div>
       </div>
+      {openPerpanjanganModal && (
+        <PerpanjangModal
+          onCloseModal={() => setOpenPerpanjanganModal(false)}
+          id={selectedId!}
+        />
+      )}
     </>
   );
 };

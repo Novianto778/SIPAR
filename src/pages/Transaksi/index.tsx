@@ -44,6 +44,14 @@ const Transaksi = () => {
         tanggal: true,
       },
       {
+        Header: 'NIK',
+        accessor: 'NIK',
+      },
+      {
+        Header: 'Alamat',
+        accessor: 'alamat',
+      },
+      {
         Header: 'No Hp',
         accessor: 'no_telp',
       },

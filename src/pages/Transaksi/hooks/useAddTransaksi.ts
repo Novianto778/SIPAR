@@ -20,6 +20,33 @@ export const addTransaksi = async ({ transaksi, transaksiDetail }: Props) => {
     .from('transaksi_detail')
     .insert([...newTransaksiDetail]);
 
+  await fetch('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'API-Key':
+        '969c2c7ede7c90617154823df64e732196bfd2bc711aaa673848d0539ba507b2',
+    },
+    body: JSON.stringify({
+      phone: transaksi.no_telp,
+      messageType: 'text',
+      body: `Nota Transaksi: ${id_transaksi}
+      Nama: ${transaksi.nama}
+      Alamat: ${transaksi.alamat}
+      No. HP: ${transaksi.no_telp}
+      Tanggal Transaksi: ${transaksi.tanggal.toDateString()}
+      Detail Transaksi:
+      ${transaksiDetail?.map(
+        (item) => `
+      Nama Motor: ${item.plat_motor}
+      Harga: ${item.id_motor.label}
+      Lama Sewa: ${item.lama_sewa}
+      `
+      )}
+      `,
+    }),
+  });
+
   return { data, dataDetail };
 };
 

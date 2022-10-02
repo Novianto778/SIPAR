@@ -4,15 +4,18 @@ export const transaksiInputSchema = z.object({
   nama: z.string(),
   alamat: z.string(),
   no_telp: z.string(),
-  diskon: z
-    .string()
-    .transform((val) => (val ? parseInt(val) : 0))
-    .optional(),
+  diskon: z.union([
+    z.string().transform((val) => (val ? parseInt(val) : 0)),
+    z.number(),
+  ]),
 });
 
 export const transaksiDetailInputSchema = z.object({
   plat_motor: z.string(),
-  lama_sewa: z.string().transform((val) => (val ? parseInt(val) : 0)),
+  lama_sewa: z.union([
+    z.string().transform((val) => (val ? parseInt(val) : 0)),
+    z.number(),
+  ]),
   denda: z.number().optional(),
   id_motor: z.object({ label: z.string(), value: z.number() }),
   // id_motor: z.union([

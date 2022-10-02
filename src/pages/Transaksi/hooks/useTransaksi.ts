@@ -4,7 +4,10 @@ import { supabase } from 'lib/supabaseClient';
 export const getTransaksi = async () => {
   let { data } = await supabase
     .from('transaksi')
-    .select(`*, transaksi_detail: id_transaksi(lama_sewa, id_motor, denda, motor: id_motor(harga))`);
+    .select(
+      `*, transaksi_detail: id_transaksi(lama_sewa, id_motor, denda, motor: id_motor(harga))`
+    )
+    .order('id_transaksi', { ascending: true });
 
   return data;
 };

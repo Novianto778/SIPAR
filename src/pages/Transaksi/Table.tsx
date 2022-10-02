@@ -110,8 +110,8 @@ const tableHooks = (hooks) => {
   hooks.visibleColumns.push((columns) => [
     ...columns,
     {
-      id: 'Edit',
-      Header: 'Edit',
+      id: 'Aksi',
+      Header: 'aksi',
       Cell: (props) => {
         const { row, onOpenDeleteModal, onOpenEditModal } = props;
         return <TableDropdown id={row.original.id_transaksi} />;
@@ -273,7 +273,7 @@ function Table({
                                 key={i}
                               >
                                 <div className="text-sm text-gray-900">
-                                  {i + 1}
+                                  {i + 1 + state.pageSize * state.pageIndex}
                                 </div>
                               </td>
                             );

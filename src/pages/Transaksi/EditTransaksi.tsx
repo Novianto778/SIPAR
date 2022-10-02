@@ -3,26 +3,33 @@ import { useQueryClient } from '@tanstack/react-query';
 import TextField from 'components/form/TextField';
 import { ROUTES } from 'constants/routes';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useUserStore } from 'store/userStore';
 import {
-  EnumStatus,
   TransaksiDetail,
   TransaksiInput,
   transaksiInputSchema,
 } from 'types/transaksi';
-import useAddTransaksi from './hooks/useAddTransaksi';
+import useEditTransaksi from './hooks/useEditTransaksi';
+import useGetTransaksiById from './hooks/useGetTransaksiById';
+import EditTransaksiDetail from './TransaksiDetail/EditTransaksiDetail';
 import TambahTransaksiDetail from './TransaksiDetail/TambahTransaksiDetail';
 
-const TambahTransaksi = () => {
+const EditTransaksi = () => {
+  const { id } = useParams();
   const { user } = useUserStore();
+  const { data: transaksiData, isLoading } = useGetTransaksiById(parseInt(id!));
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { mutateAsync, isSuccess } = useAddTransaksi();
+  const { mutateAsync, isSuccess } = useEditTransaksi();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [selectedTransaksiDetail, setSelectedTransaksiDetail] = useState<
+    number | null
+  >(null);
   const [transaksiDetail, setTransaksiDetail] = useState<
     TransaksiDetail[] | []
   >([]);
@@ -30,6 +37,7 @@ const TambahTransaksi = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<TransaksiInput>({ resolver: zodResolver(transaksiInputSchema) });
 
@@ -61,22 +69,23 @@ const TambahTransaksi = () => {
     }
     const newData = {
       ...data,
-      status: EnumStatus.Pending,
+      status: transaksiData.status,
       tanggal: new Date(),
       id_user: user?.id as string,
       created_at: new Date(),
       updated_at: new Date(),
       diskon: data.diskon || 0,
+      id_transaksi: parseInt(id!),
     };
     const result = await mutateAsync(
-      { transaksi: newData, transaksiDetail },
+      { transaksi: newData },
       {
         onSuccess: () => {
           queryClient.invalidateQueries(['transaksi']);
         },
       }
     );
-    if (result.data && result.dataDetail) {
+    if (result.data) {
       toast.success('Transaksi berhasil ditambahkan', {
         position: 'top-right',
       });
@@ -92,24 +101,31 @@ const TambahTransaksi = () => {
     setOpenModal(false);
   };
 
-  const onDeleteTransaksiDetail = (index: number) => {
-    const newTransaksiDetail = transaksiDetail.filter(
-      (_, itemIndex) => itemIndex !== index
-    );
-    setTransaksiDetail(newTransaksiDetail);
-    toast.success('Berhasil menghapus transaksi detail', {
-      position: 'top-right',
-    });
-  };
-
   const openAddTransaksiDetail = () => {
     setOpenModal(true);
   };
 
+  const handleOpenEditModal = (id: number) => {
+    setOpenEditModal(true);
+    setSelectedTransaksiDetail(id);
+  };
+
+  useEffect(() => {
+    if (transaksiData) {
+      setTransaksiDetail(transaksiData.transaksi_detail);
+      setValue('nama', transaksiData.nama);
+      setValue('no_telp', transaksiData.no_telp);
+      setValue('alamat', transaksiData.alamat);
+      setValue('diskon', transaksiData.diskon);
+    }
+  }, [transaksiData, setValue]);
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
       <Toaster />
-      <h2 className="text-2xl font-semibold">Tambah Transaksi</h2>
+      <h2 className="text-2xl font-semibold">Edit Transaksi</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 mt-6">
           <div>
@@ -141,13 +157,14 @@ const TambahTransaksi = () => {
             <TextField
               label="Diskon"
               placeholder="Rp"
+              type="text"
               {...register('diskon')}
               error={errors.diskon?.message}
             />
           </div>
         </div>
         <button type="submit" className="btn btn-blue mt-4">
-          Submit
+          Edit
         </button>
         <div className="flex items-center justify-between mt-6">
           <h3 className="text-base font-semibold">Transaksi Detail</h3>
@@ -190,13 +207,11 @@ const TambahTransaksi = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {transaksiDetail?.map((item, index) => {
+                    {transaksiDetail?.map((item: any, index) => {
                       return (
                         <tr key={index}>
                           <td className="table-simple">{index + 1}</td>
-                          <td className="table-simple">
-                            {item.id_motor.label}
-                          </td>
+                          <td className="table-simple">{item.motor.tipe}</td>
                           <td className="table-simple">{item.plat_motor}</td>
                           <td className="table-simple text-center">
                             {item.lama_sewa}
@@ -213,18 +228,11 @@ const TambahTransaksi = () => {
                           </td>
                           <td className="table-simple">
                             <button
-                              // onClick={() => onDeleteTransaksiDetail(index)}
+                              onClick={() => handleOpenEditModal(item.id!)}
                               type="button"
                               className="btn text-blue-500"
                             >
                               Edit
-                            </button>
-                            <button
-                              onClick={() => onDeleteTransaksiDetail(index)}
-                              type="button"
-                              className="btn text-red-500"
-                            >
-                              Hapus
                             </button>
                           </td>
                         </tr>
@@ -237,6 +245,12 @@ const TambahTransaksi = () => {
           </div>
         </div>
       </form>
+      {openEditModal && (
+        <EditTransaksiDetail
+          onCloseModal={() => setOpenEditModal(false)}
+          selectedTransaksiDetail={selectedTransaksiDetail}
+        />
+      )}
       {openModal && (
         <TambahTransaksiDetail
           onCloseModal={() => setOpenModal(false)}
@@ -247,4 +261,4 @@ const TambahTransaksi = () => {
   );
 };
 
-export default TambahTransaksi;
+export default EditTransaksi;

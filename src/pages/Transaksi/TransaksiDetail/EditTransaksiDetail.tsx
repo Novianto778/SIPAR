@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import TextField from 'components/form/TextField';
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import ReactSelect from 'react-select';
 import {
@@ -10,11 +10,18 @@ import {
 } from 'types/transaksi';
 import { FaTimes } from 'react-icons/fa';
 import useMotor from 'pages/Motor/hooks/useMotor';
+import useGetTransaksiById from '../hooks/useGetTransaksiById';
+import { useParams } from 'react-router-dom';
+import useGetTransaksiDetailById from '../hooks/useGetTransaksiDetailById';
+import useEditTransaksiDetail from '../hooks/useEditTransaksiDetail';
 import moment from 'moment';
+import { useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 interface Props {
   onCloseModal: () => void;
-  onAdd: (data: TransaksiDetail) => void;
+  selectedTransaksiDetail: number | null;
+  // onAdd: (data: TransaksiDetail) => void;
 }
 
 type OptionType = {
@@ -22,8 +29,21 @@ type OptionType = {
   value: number;
 };
 
-const TambahTransaksiDetail: FC<Props> = ({ onCloseModal, onAdd }) => {
+const EditTransaksiDetail: FC<Props> = ({
+  onCloseModal,
+  selectedTransaksiDetail,
+}) => {
+  const queryClient = useQueryClient();
   const { data, isLoading } = useMotor();
+  // const { id } = useParams();
+
+  // const { data: transaksi, isLoading: isLoadingTransaksi } =
+  //   useGetTransaksiById(parseInt(id!));
+
+  const { data: transaksiDetail, isLoading: isLoadingTransaksiDetail } =
+    useGetTransaksiDetailById(selectedTransaksiDetail!);
+
+  const { mutateAsync, isSuccess } = useEditTransaksiDetail();
   const options: OptionType[] | [] = useMemo(
     () =>
       data?.map((item) => ({
@@ -33,26 +53,56 @@ const TambahTransaksiDetail: FC<Props> = ({ onCloseModal, onAdd }) => {
     [data]
   );
 
+  if (isSuccess) {
+    queryClient.refetchQueries(['transaksi']);
+  }
+
   const {
     register,
     handleSubmit,
+    setValue,
     control,
     formState: { errors },
   } = useForm<TransaksiDetailInput>({
     resolver: zodResolver(transaksiDetailInputSchema),
   });
 
-  const onSubmit = (data: TransaksiDetailInput) => {
+  const onSubmit = async (data: TransaksiDetailInput) => {
     const newData = {
       ...data,
-      tanggal_mulai: new Date(),
-      tanggal_selesai: moment().add(data.lama_sewa, 'days').toDate(),
-      denda: 0,
+      id_motor: data.id_motor.value,
+      tanggal_mulai: transaksiDetail?.tanggal_mulai,
+      tanggal_selesai: moment(transaksiDetail?.tanggal_mulai)
+        .add(data.lama_sewa, 'days')
+        .toDate(),
     };
-    onAdd(newData);
+    const result = await mutateAsync(
+      { transaksiDetail: newData, selectedId: selectedTransaksiDetail! },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['transaksi']);
+          onCloseModal();
+        },
+      }
+    );
+
+    if (result.data) {
+      toast.success('Berhasil mengubah data transaksi detail');
+    }
   };
 
-  if (isLoading) {
+  useEffect(() => {
+    if (transaksiDetail) {
+      setValue('plat_motor', transaksiDetail.plat_motor);
+      setValue('lama_sewa', transaksiDetail.lama_sewa);
+      setValue('id_motor', {
+        value: transaksiDetail.motor.id_motor,
+        label: transaksiDetail.motor.tipe,
+      });
+    }
+  }, [transaksiDetail, setValue]);
+
+  if (isLoading || isLoadingTransaksiDetail) {
     return <div>Loading...</div>;
   }
   return (
@@ -104,11 +154,11 @@ const TambahTransaksiDetail: FC<Props> = ({ onCloseModal, onAdd }) => {
           )}
         </div>
         <button type="submit" className="btn btn-blue mt-4">
-          Tambah
+          Edit
         </button>
       </form>
     </>
   );
 };
 
-export default TambahTransaksiDetail;
+export default EditTransaksiDetail;

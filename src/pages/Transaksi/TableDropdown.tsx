@@ -5,6 +5,9 @@ import { FiEdit3 } from 'react-icons/fi';
 import { RiDeleteBin2Line } from 'react-icons/ri';
 import { AiOutlineCheckCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
+import useChangeStatus from './hooks/useChangeStatus';
+import { useQueryClient } from '@tanstack/react-query';
+import useOnClickOutside from 'hooks/onClickOutside';
 
 interface Props {
   onDetail: () => void;
@@ -15,12 +18,26 @@ interface Props {
 
 const TableDropdown: React.FC<Props> = ({ onDetail, onEdit, onDelete, id }) => {
   const navigate = useNavigate();
+  const { mutate, isSuccess } = useChangeStatus();
+  const queryClient = useQueryClient();
   const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
+  const btnDropdownRef = React.useRef(null);
+  useOnClickOutside(btnDropdownRef, () => setDropdownPopoverShow(false));
+
   const openDropdownPopover = () => {
     setDropdownPopoverShow(true);
   };
   const closeDropdownPopover = () => {
     setDropdownPopoverShow(false);
+  };
+
+  const handleCompleteTransaksi = (id: number) => {
+    mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['transaksi']);
+        setDropdownPopoverShow(false);
+      },
+    });
   };
   return (
     <>
@@ -34,6 +51,7 @@ const TableDropdown: React.FC<Props> = ({ onDetail, onEdit, onDelete, id }) => {
         <FaEllipsisV />
       </button>
       <div
+        ref={btnDropdownRef}
         className={
           (dropdownPopoverShow ? 'block ' : 'hidden ') +
           `bg-white text-base absolute list-none text-left rounded shadow-lg w-40 z-50 right-16`
@@ -46,21 +64,21 @@ const TableDropdown: React.FC<Props> = ({ onDetail, onEdit, onDelete, id }) => {
           <TbListDetails size={24} />
           <span>Detail</span>
         </div>
-        <div className="table-dropdown-menu">
+        <div
+          className="table-dropdown-menu"
+          onClick={() => handleCompleteTransaksi(parseInt(id))}
+        >
           <AiOutlineCheckCircle size={24} />
           <span>Selesai</span>
         </div>
-        <div className="table-dropdown-menu">
-          <AiOutlinePlusCircle size={24} />
-          <span>Perpanjang</span>
-        </div>
-        <div className="table-dropdown-menu">
+        <div
+          className="table-dropdown-menu"
+          onClick={() => {
+            navigate(`edit/${id}`);
+          }}
+        >
           <FiEdit3 size={24} />
           <span>Edit</span>
-        </div>
-        <div className="table-dropdown-menu">
-          <RiDeleteBin2Line size={24} />
-          <span>Delete</span>
         </div>
       </div>
     </>

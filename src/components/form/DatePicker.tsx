@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect, forwardRef } from 'react';
+import { useState, useEffect, forwardRef, useRef } from 'react';
 import {
   format,
   subMonths,
@@ -11,6 +11,7 @@ import {
   getDay,
 } from 'date-fns';
 import DatePicker from 'react-datepicker';
+import useOnClickOutside from 'hooks/onClickOutside';
 
 interface Props {
   selectedDate: Date;
@@ -27,6 +28,8 @@ const Datepicker = forwardRef((props: Props, ref) => {
   // const [selectedDate, setSelectedDate] = useState(
   //   props.currValue || new Date()
   // );
+  const datePickerRef = useRef(null);
+  useOnClickOutside(datePickerRef, () => setShowDatepicker(false));
   const [type, setType] = useState('date');
 
   const decrement = () => {
@@ -131,7 +134,7 @@ const Datepicker = forwardRef((props: Props, ref) => {
 
   return (
     <>
-      <div className="container shadow max-w-[200px]">
+      <div className="container shadow max-w-[200px]" ref={datePickerRef}>
         <div className="relative">
           <input type="hidden" name="date" ref={ref} value={selectedDate} />
           <input
