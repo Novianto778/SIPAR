@@ -16,7 +16,7 @@ export const transaksiDetailInputSchema = z.object({
     z.string().transform((val) => (val ? parseInt(val) : 0)),
     z.number(),
   ]),
-  denda: z.number().optional(),
+  denda: z.number(),
   id_motor: z.object({ label: z.string(), value: z.number() }),
   // id_motor: z.union([
   //   z.object({ label: z.string(), value: z.number() }),

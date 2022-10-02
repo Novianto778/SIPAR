@@ -1,4 +1,5 @@
 export function formatUang(angka: number) {
+
   const angka_string = angka.toString();
   var number_string = angka_string.replace(/[^,\d]/g, '').toString(),
     split = number_string.split(','),
@@ -12,5 +13,5 @@ export function formatUang(angka: number) {
   }
 
   rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-  return 'Rp ' + rupiah;
+  return angka >= 0 ? 'Rp ' + rupiah : '-Rp ' + rupiah;
 }

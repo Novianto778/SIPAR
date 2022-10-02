@@ -1,21 +1,21 @@
 import moment from 'moment';
 import Table, { SelectColumnFilter, StatusPill } from 'pages/Transaksi/Table';
-import React, { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTransaksi from './hooks/useTransaksi';
 
 const Transaksi = () => {
   const { data, isLoading } = useTransaksi();
-  const [startDate, setStartDate] = React.useState(
+  const [startDate, setStartDate] = useState(
     moment().subtract(30, 'days').toDate()
   );
 
-  const [endDate, setEndDate] = React.useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
-  const newData = React.useMemo(() => {
+  const newData = useMemo(() => {
     return data
       ?.filter((item) => {
-        const date = new Date(item.tanggal_service).setHours(0, 0, 0, 0);
+        const date = new Date(item.tanggal).setHours(0, 0, 0, 0);
         return (
           date >= startDate.setHours(0, 0, 0, 0) &&
           date <= endDate.setHours(0, 0, 0, 0)
@@ -31,7 +31,7 @@ const Transaksi = () => {
       });
   }, [data, startDate, endDate]);
 
-  const column = React.useMemo(
+  const column = useMemo(
     () => [
       {
         Header: 'NO',
