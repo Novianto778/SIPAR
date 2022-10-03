@@ -8,6 +8,7 @@ import { Motor } from 'types/motor';
 import { useState } from 'react';
 import PerpanjangModal from './PerpanjangModal';
 import useGetTransaksiById from '../hooks/useGetTransaksiById';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 
 type Item = TransaksiDetailType & {
   motor: Motor;
@@ -91,18 +92,22 @@ const TransaksiDetail = () => {
                       </td>
 
                       <td className="flex items-center gap-x-6 px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                        <button className="text-green-500 hover:text-green-700">
-                          Edit
-                        </button>
-                        {transaksi?.status === 'Pending' && (
-                          <button
-                            className="text-blue-500 hover:text-blue-700"
-                            onClick={() =>
-                              handleOpenPerpanjanganModal(item.id!)
-                            }
-                          >
-                            Perpanjang
-                          </button>
+                        {transaksi?.status === 'Pending' ? (
+                          <>
+                            <button className="text-green-500 hover:text-green-700">
+                              Edit
+                            </button>
+                            <button
+                              className="text-blue-500 hover:text-blue-700"
+                              onClick={() =>
+                                handleOpenPerpanjanganModal(item.id!)
+                              }
+                            >
+                              Perpanjang
+                            </button>
+                          </>
+                        ) : (
+                          <AiOutlineCheckCircle size={24} className="text-green-500" />
                         )}
                       </td>
                     </tr>

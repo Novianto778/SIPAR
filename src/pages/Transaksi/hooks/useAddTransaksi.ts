@@ -24,8 +24,7 @@ export const addTransaksi = async ({ transaksi, transaksiDetail }: Props) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'API-Key':
-        '969c2c7ede7c90617154823df64e732196bfd2bc711aaa673848d0539ba507b2',
+      'API-Key': process.env.REACT_APP_SENDTALK_API_KEY!,
     },
     body: JSON.stringify({
       phone: transaksi.no_telp,

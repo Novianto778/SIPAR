@@ -5,7 +5,7 @@ import { ROUTES } from 'constants/routes';
 import moment from 'moment';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from 'store/userStore';
 import {
@@ -21,7 +21,7 @@ const TambahTransaksi = () => {
   const { user } = useUserStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { mutateAsync, isSuccess } = useAddTransaksi();
+  const { mutateAsync, isSuccess, isLoading } = useAddTransaksi();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [transaksiDetail, setTransaksiDetail] = useState<
     TransaksiDetail[] | []
@@ -108,7 +108,6 @@ const TambahTransaksi = () => {
 
   return (
     <>
-      <Toaster />
       <h2 className="text-2xl font-semibold">Tambah Transaksi</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 mt-6">
@@ -146,7 +145,11 @@ const TambahTransaksi = () => {
             />
           </div>
         </div>
-        <button type="submit" className="btn btn-blue mt-4">
+        <button
+          type="submit"
+          className="btn btn-blue mt-4"
+          disabled={isLoading}
+        >
           Submit
         </button>
         <div className="flex items-center justify-between mt-6">

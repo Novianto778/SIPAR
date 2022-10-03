@@ -4,7 +4,7 @@ import TextField from 'components/form/TextField';
 import useMotor from 'pages/Motor/hooks/useMotor';
 import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import ReactSelect from 'react-select';
 import { Service, ServiceInput, serviceInputSchema } from 'types/service';
 import useAddService from './hooks/useAddService';
@@ -59,7 +59,6 @@ const TambahService = () => {
 
   return (
     <>
-      <Toaster />
       <h2 className="text-2xl font-semibold">Tambah Service</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

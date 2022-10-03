@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import CircularChart from './components/CircularChart';
 import TransactionReport from './components/TransactionReport';
 import { formatUang } from 'utils/formatUang';
+import { useJumlahTransaksi } from './hooks/useJumlahTransaksi';
 
 const orders = [
   {
@@ -50,6 +51,8 @@ const orders = [
 ];
 
 const Dashboard = () => {
+  const { data } = useJumlahTransaksi();
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 h-full gap-x-4">
       <div className="col-span-2">
@@ -59,7 +62,7 @@ const Dashboard = () => {
             <StatisticCard title="Motor On-Going" value={100} Icon={Motor} />
             <StatisticCard
               title="Jumlah Transaksi"
-              value={100}
+              value={data as number}
               Icon={Transaction}
             />
             <StatisticCard

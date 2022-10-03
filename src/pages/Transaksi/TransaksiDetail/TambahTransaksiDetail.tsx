@@ -43,7 +43,8 @@ const TambahTransaksiDetail: FC<Props> = ({ onCloseModal, onAdd }) => {
   });
 
   const onSubmit = (data: TransaksiDetailInput) => {
-    const newData = {
+    console.log('run');
+    const newData: TransaksiDetail = {
       ...data,
       tanggal_mulai: new Date(),
       tanggal_selesai: moment().add(data.lama_sewa, 'days').toDate(),
@@ -87,7 +88,7 @@ const TambahTransaksiDetail: FC<Props> = ({ onCloseModal, onAdd }) => {
             <TextField
               label="Lama Sewa"
               placeholder="2 hari"
-              {...register('lama_sewa')}
+              {...register('lama_sewa', { valueAsNumber: true })}
               error={errors.lama_sewa?.message}
             />
           </div>

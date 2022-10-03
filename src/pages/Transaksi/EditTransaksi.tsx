@@ -5,7 +5,7 @@ import { ROUTES } from 'constants/routes';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUserStore } from 'store/userStore';
 import {
@@ -124,7 +124,6 @@ const EditTransaksi = () => {
 
   return (
     <>
-      <Toaster />
       <h2 className="text-2xl font-semibold">Edit Transaksi</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 mt-6">
