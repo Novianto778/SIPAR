@@ -10,6 +10,7 @@ export const addUser = async ({ email, password }: Props) => {
   let { error } = await supabase.auth.api.createUser({
     email,
     password,
+    email_confirm: true,
   });
 
   if (error) {
