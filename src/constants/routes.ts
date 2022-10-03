@@ -11,4 +11,5 @@ export const ROUTES = {
   MOTOR_ON_GOING: '/on-going',
   SERVICE: '/service',
   REPORT: '/laporan',
+  MANAGE_USER: '/kelola-user',
 };

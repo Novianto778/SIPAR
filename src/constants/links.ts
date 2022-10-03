@@ -1,6 +1,6 @@
 import { HiHome } from 'react-icons/hi';
 import { FaMotorcycle } from 'react-icons/fa';
-import { AiFillTool } from 'react-icons/ai';
+import { AiFillTool, AiOutlineUserAdd } from 'react-icons/ai';
 import { TbReportAnalytics } from 'react-icons/tb';
 import { BiTransfer } from 'react-icons/bi';
 import { ROUTES } from './routes';
@@ -30,6 +30,11 @@ const sidebarLinks = [
     name: 'Laporan',
     icon: TbReportAnalytics,
     path: ROUTES.REPORT,
+  },
+  {
+    name: 'Kelola User',
+    icon: AiOutlineUserAdd,
+    path: ROUTES.MANAGE_USER,
   },
 ];
 

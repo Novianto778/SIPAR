@@ -18,6 +18,7 @@ import TambahService from 'pages/Service/TambahService';
 import EditService from 'pages/Service/EditService';
 import Laporan from 'pages/Laporan';
 import { Toaster } from 'react-hot-toast';
+import KelolaUser from 'pages/PengelolaanUser';
 
 function App() {
   const { loading } = useAuthStateChange();
@@ -46,6 +47,7 @@ function App() {
               <Route path="edit/:id" element={<EditService />} />
             </Route>
             <Route path={ROUTES.REPORT} element={<Laporan />} />
+            <Route path={ROUTES.MANAGE_USER} element={<KelolaUser />} />
           </Route>
         </Route>
         <Route path={ROUTES.LOGIN} element={<Login />} />

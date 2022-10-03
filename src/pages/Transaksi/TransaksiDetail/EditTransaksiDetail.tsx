@@ -4,14 +4,11 @@ import { FC, useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import ReactSelect from 'react-select';
 import {
-  TransaksiDetail,
   TransaksiDetailInput,
   transaksiDetailInputSchema,
 } from 'types/transaksi';
 import { FaTimes } from 'react-icons/fa';
 import useMotor from 'pages/Motor/hooks/useMotor';
-import useGetTransaksiById from '../hooks/useGetTransaksiById';
-import { useParams } from 'react-router-dom';
 import useGetTransaksiDetailById from '../hooks/useGetTransaksiDetailById';
 import useEditTransaksiDetail from '../hooks/useEditTransaksiDetail';
 import moment from 'moment';

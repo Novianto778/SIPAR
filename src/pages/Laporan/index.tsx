@@ -50,7 +50,6 @@ const Laporan = () => {
           return total + num.denda + num.lama_sewa * num.motor.harga;
         }, 0);
 
-      console.log(pendapatan - pengeluaran);
 
       setLaporanList((prev) => [
         ...prev,
