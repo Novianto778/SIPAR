@@ -30,6 +30,9 @@ const KelolaUser = () => {
                     <th scope="col" className="table-simple text-left">
                       Role
                     </th>
+                    <th scope="col" className="table-simple text-left">
+                      Aksi
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -40,6 +43,9 @@ const KelolaUser = () => {
                       </td>
                       <td className="table-simple-row">{item.email}</td>
                       <td className="table-simple-row">Admin</td>
+                      <td className="table-simple-row">
+                        <button className="text-red-500">Delete</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

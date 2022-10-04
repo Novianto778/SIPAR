@@ -4,7 +4,7 @@ import useService from 'pages/Service/hooks/useService';
 import useTransaksi from 'pages/Transaksi/hooks/useTransaksi';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getMonthName } from 'utils/getMonthName';
-import Table from './Table';
+import Table, { ExportExcel } from './Table';
 
 const Laporan = () => {
   const { data: service, isLoading } = useService();
@@ -86,6 +86,11 @@ const Laporan = () => {
         Header: 'Laba',
         accessor: 'laba',
         uang: true,
+      },
+      {
+        Header: 'Aksi',
+        accessor: 'aksi',
+        Cell: ExportExcel,
       },
     ],
     []

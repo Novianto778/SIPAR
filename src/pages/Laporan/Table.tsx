@@ -22,6 +22,7 @@ import 'moment/locale/id';
 import { formatNama } from 'utils/formatNama';
 import { formatUang } from 'utils/formatUang';
 import Datepicker from 'components/form/DatePicker';
+import { BiExport } from 'react-icons/bi';
 
 // Define a default UI for filtering
 function GlobalFilter(props) {
@@ -87,6 +88,15 @@ export function SelectColumnFilter({
     </label>
   );
 }
+
+export const ExportExcel = () => {
+  return (
+    <button className="flex gap-x-2 items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg- -600">
+      <BiExport size={24} />
+      <span>Export Excel</span>
+    </button>
+  );
+};
 
 export function StatusPill({ value }) {
   const status = value ? value.toLowerCase() : 'unknown';
