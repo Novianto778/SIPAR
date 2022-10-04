@@ -50,7 +50,6 @@ const Laporan = () => {
           return total + num.denda + num.lama_sewa * num.motor.harga;
         }, 0);
 
-
       setLaporanList((prev) => [
         ...prev,
         {
@@ -115,7 +114,7 @@ const Laporan = () => {
       </div>
       <div className="mt-8 h-full">
         <div className="min-w-full overflow-x-auto h-full">
-          <div className="overflow-hidden max-w-dashboard md:w-full h-full">
+          <div className="overflow-hidden max-w-dashboard-small md:w-full h-full">
             <Table
               columns={column}
               data={laporanList as any | []}

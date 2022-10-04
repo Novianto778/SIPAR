@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { FaEllipsisV } from 'react-icons/fa';
-import { FiEdit3 } from 'react-icons/fi';
+import { FiEdit3, FiTrash } from 'react-icons/fi';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import useOnClickOutside from 'hooks/onClickOutside';
@@ -74,6 +74,10 @@ const TableDropdown: React.FC<Props> = ({ id }) => {
             >
               <FiEdit3 size={24} />
               <span>Edit</span>
+            </div>
+            <div className="table-dropdown-menu">
+              <FiTrash size={24} />
+              <span>Hapus</span>
             </div>
           </div>
         </>

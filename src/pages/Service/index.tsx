@@ -86,7 +86,7 @@ const Service = () => {
       </div>
       <div className="mt-8 h-full">
         <div className="min-w-full overflow-x-auto h-full">
-          <div className="overflow-hidden max-w-dashboard md:w-full h-full">
+          <div className="overflow-hidden max-w-dashboard-small md:w-full h-full">
             <Table
               columns={column}
               data={newData as any | []}

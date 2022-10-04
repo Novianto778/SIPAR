@@ -13,10 +13,11 @@ module.exports = {
         },
       },
       zIndex: {
-        '100': '100',
+        100: '100',
       },
       maxWidth: {
         dashboard: 'calc(100vw - 80px)',
+        'dashboard-small': 'calc(100vw - 40px)',
       },
     },
   },

@@ -11,7 +11,7 @@ const Sidebar = () => {
         >
           <img src="/logo.png" alt="siparjo" className="rounded-full w-12 h-12" />
         </a>
-        <div className="flex mt-8 h-full items-center justify-center space-x-16 py-2 md:flex-col md:space-x-0 md:space-y-4 md:py-4">
+        <div className="flex mt-8 h-full items-center justify-center space-x-8 py-2 md:flex-col md:space-x-0 md:space-y-4 md:py-4">
           {sidebarLinks.map((item) => {
             return (
               <SidebarLink
