@@ -266,12 +266,12 @@ function Table({
                           if (cell.column.Header === 'NO') {
                             return (
                               <td
-                                className="px-6 py-4 whitespace-nowrap"
+                                className="px-6 py-4 w-4"
                                 key={cell.column.id}
                               >
-                                <div className="text-sm text-gray-900">
+                                <span className="text-sm text-gray-900">
                                   {i + 1 + state.pageSize * state.pageIndex}
-                                </div>
+                                </span>
                               </td>
                             );
                           }

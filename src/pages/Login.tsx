@@ -34,7 +34,7 @@ const Login = () => {
 
   return (
     <section className="h-screen">
-      <div className="px-20 py-12 h-full mx-auto lg:mx-0">
+      <div className="px-4 md:px-20 py-12 h-full mx-auto lg:mx-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 justify-center items-center flex-wrap h-full gap-6 text-gray-800">
           <div className="hidden lg:block w-full">
             <img

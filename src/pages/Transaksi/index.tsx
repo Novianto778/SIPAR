@@ -83,14 +83,14 @@ const Transaksi = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Transaksi</h2>
+        <h2 className="text-2xl font-bold">Data Transaksi</h2>
         <Link to="add" className="btn btn-blue">
           Tambah
         </Link>
       </div>
       <div className="mt-8 h-full">
-        <div className="min-w-full overflow-x-auto h-full">
-          <div className="overflow-hidden max-w-dashboard-small md:w-full h-full">
+        <div className="min-w-full overflow-x-auto max-w-4xl xl:max-w-full h-full">
+          <div className="overflow-hidden md:w-full h-full">
             <Table
               columns={column}
               data={newData as any | []}

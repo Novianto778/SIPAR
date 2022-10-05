@@ -115,7 +115,7 @@ const Laporan = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">List Laporan</h2>
+        <h2 className="text-2xl font-bold">Data Laporan</h2>
       </div>
       <div className="mt-8 h-full">
         <div className="min-w-full overflow-x-auto h-full">
