@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import AddUserModal from './AddUserModal';
 import { useGetUser } from './hooks/useGetUser';
+import { useDeleteUser } from './hooks/useDeleteUser';
 
 const KelolaUser = () => {
   const { data: users } = useGetUser();
+  const { mutate: deleteUser } = useDeleteUser();
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -44,7 +46,12 @@ const KelolaUser = () => {
                       <td className="table-simple-row">{item.email}</td>
                       <td className="table-simple-row">Admin</td>
                       <td className="table-simple-row">
-                        <button className="text-red-500">Delete</button>
+                        <button
+                          className="text-red-500"
+                          onClick={() => deleteUser(item.id)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}

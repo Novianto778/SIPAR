@@ -89,8 +89,8 @@ const Transaksi = () => {
         </Link>
       </div>
       <div className="mt-8 h-full">
-        <div className="min-w-full overflow-x-auto max-w-4xl xl:max-w-full h-full">
-          <div className="overflow-hidden md:w-full h-full">
+        <div className="min-w-full overflow-x-auto max-w-dashboard xl:max-w-full h-full">
+          <div className="overflow-hidden md:w-full h-full ml-auto">
             <Table
               columns={column}
               data={newData as any | []}
