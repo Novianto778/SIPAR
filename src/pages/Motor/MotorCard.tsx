@@ -8,17 +8,11 @@ import { Link } from 'react-router-dom';
 
 interface Props {
   item: Motor;
+  onOpenModal: () => void;
 }
 
-const MotorCard = ({ item }: Props) => {
+const MotorCard = ({ item, onOpenModal }: Props) => {
   const { image } = useImage(item.img as string);
-  const queryClient = useQueryClient();
-
-  const handleDelete = async () => {
-    await deleteImage('motor', item.img as string);
-    await deleteRow('motor', item.id_motor!);
-    await queryClient.invalidateQueries(['motor']);
-  };
 
   return (
     <>
@@ -54,7 +48,7 @@ const MotorCard = ({ item }: Props) => {
             </Link>
             <button
               className="btn bg-red-300 text-white group-hover:z-30"
-              onClick={handleDelete}
+              onClick={onOpenModal}
             >
               Delete
             </button>

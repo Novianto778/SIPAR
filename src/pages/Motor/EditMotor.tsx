@@ -5,6 +5,7 @@ import { ROUTES } from 'constants/routes';
 import { deleteImage, updateDataToTable, uploadImage } from 'lib/supabase';
 import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Motor, motorSchema } from 'types/motor';
 import { v4 as uuidv4 } from 'uuid';
@@ -74,7 +75,11 @@ const EditMotor = () => {
   }
 
   const onSubmit: SubmitHandler<Motor> = async (data: Motor) => {
-    await mutateAsync(data);
+    await mutateAsync(data, {
+      onSuccess: () => {
+        toast.success('Motor berhasil diubah');
+      },
+    });
   };
 
   useEffect(() => {

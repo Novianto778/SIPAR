@@ -1,9 +1,23 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Motor } from 'types/motor';
+import DeleteModal from './DeleteModal';
 import useMotor from './hooks/useMotor';
 import MotorCard from './MotorCard';
 
 const ListMotor = () => {
   const { data, isLoading } = useMotor();
+  const [openModal, setOpenModal] = useState(false);
+  const [img, setImg] = useState<string | null>(null);
+  const [id, setId] = useState<number | null>(null);
+  const [tipeMotor, setTipeMotor] = useState<string | null>(null)
+
+  const handleOpenModal = (id: number, img: string, tipe: string) => {
+    setOpenModal(true);
+    setId(id);
+    setImg(img);
+    setTipeMotor(tipe)
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -16,9 +30,27 @@ const ListMotor = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
-        {data?.map((item, index) => (
-          <MotorCard item={item} key={index} />
-        ))}
+        {data?.map((item: Motor, index) => {
+          return (
+            <>
+              <MotorCard
+                item={item}
+                key={index}
+                onOpenModal={() =>
+                  handleOpenModal(item.id_motor!, item.img as string, item.tipe)
+                }
+              />
+              {openModal && (
+                <DeleteModal
+                  id={id!}
+                  img={img!}
+                  tipeMotor={tipeMotor!}
+                  onCloseModal={() => setOpenModal(false)}
+                />
+              )}
+            </>
+          );
+        })}
       </div>
     </>
   );

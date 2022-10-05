@@ -64,7 +64,7 @@ const AddUserModal: FC<Props> = ({ onCloseModal }) => {
             <TextField
               label="Password"
               placeholder="password user"
-              {...register('password', { required: true })}
+              {...register('password', { required: true, minLength: 6 })}
               error={errors.password?.message}
             />
           </div>

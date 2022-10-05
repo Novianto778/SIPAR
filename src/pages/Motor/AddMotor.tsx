@@ -5,6 +5,7 @@ import { ROUTES } from 'constants/routes';
 import { insertDataToTable, uploadImage } from 'lib/supabase';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Motor, motorSchema } from 'types/motor';
 import { v4 as uuidv4 } from 'uuid';
@@ -64,6 +65,7 @@ const AddMotor = () => {
     await mutateAsync(data, {
       onSuccess: () => {
         queryClient.refetchQueries(['motor']);
+        toast.success('Motor berhasil ditambahkan');
       },
     });
   };
