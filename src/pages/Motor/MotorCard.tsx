@@ -2,8 +2,6 @@ import useImage from './hooks/useImage';
 import Skeleton from 'react-loading-skeleton';
 import { formatUang } from 'utils/formatUang';
 import { Motor } from 'types/motor';
-import { deleteImage, deleteRow } from 'lib/supabase';
-import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 interface Props {

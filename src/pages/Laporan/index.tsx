@@ -1,4 +1,6 @@
+import { PostgrestResponse } from '@supabase/supabase-js';
 import { getDaysInMonth, getMonth, getYear } from 'date-fns';
+import { supabase } from 'lib/supabaseClient';
 import moment from 'moment';
 import useService from 'pages/Service/hooks/useService';
 import useTransaksi from 'pages/Transaksi/hooks/useTransaksi';
@@ -15,8 +17,9 @@ const Laporan = () => {
     new Date(getYear(new Date()), getMonth(new Date()), 30)
   );
 
-  const getLaporanList = useCallback(() => {
+  const getLaporanList = useCallback(async () => {
     setLaporanList([]);
+    const laporanArray = [];
     for (
       let i = startDate;
       i <= endDate;
@@ -25,42 +28,50 @@ const Laporan = () => {
       const date = i.setHours(0, 0, 0, 0);
       const endMonth = moment(i).add(1, 'month').toDate().setHours(0, 0, 0, 0);
 
-      console.log(new Date(date), new Date(endMonth));
+      // const pengeluaran = service
+      //   ?.filter((item) => {
+      //     return (
+      //       new Date(item.tanggal_service).setHours(0, 0, 0, 0) <= endMonth &&
+      //       new Date(item.tanggal_service).setHours(0, 0, 0, 0) >= date
+      //     );
+      //   })
+      //   .reduce((acc, item) => {
+      //     return acc + item.total_harga;
+      //   }, 0);
 
-      const pengeluaran = service
-        ?.filter((item) => {
-          return (
-            new Date(item.tanggal_service).setHours(0, 0, 0, 0) <= endMonth &&
-            new Date(item.tanggal_service).setHours(0, 0, 0, 0) >= date
-          );
-        })
-        .reduce((acc, item) => {
-          return acc + item.total_harga;
-        }, 0);
+      // const pendapatan = transaksi
+      //   ?.filter((item) => {
+      //     return (
+      //       new Date(item.tanggal).setHours(0, 0, 0, 0) <= endMonth &&
+      //       new Date(item.tanggal).setHours(0, 0, 0, 0) >= date
+      //     );
+      //   })
+      //   .map((item) => item.transaksi_detail[0])
+      //   .reduce((total: number, num) => {
+      //     return total + num.denda + num.lama_sewa * num.motor.harga;
+      //   }, 0);
+      const { data: pendapatan }: any = await supabase.rpc('total_pendapatan', {
+        start_date: new Date(date),
+        end_date: new Date(endMonth),
+      });
 
-      const pendapatan = transaksi
-        ?.filter((item) => {
-          return (
-            new Date(item.tanggal).setHours(0, 0, 0, 0) <= endMonth &&
-            new Date(item.tanggal).setHours(0, 0, 0, 0) >= date
-          );
-        })
-        .map((item) => item.transaksi_detail[0])
-        .reduce((total: number, num) => {
-          return total + num.denda + num.lama_sewa * num.motor.harga;
-        }, 0);
-
-      setLaporanList((prev) => [
-        ...prev,
+      const { data: pengeluaran }: any = await supabase.rpc(
+        'total_pengeluaran',
         {
-          bulan: getMonthName(getMonth(i)) + ' ' + getYear(i),
-          pendapatan,
-          pengeluaran,
-          laba: pendapatan - pengeluaran,
-        },
-      ]);
+          start_date: new Date(date),
+          end_date: new Date(endMonth),
+        }
+      );
+
+      laporanArray.push({
+        bulan: getMonthName(getMonth(i)) + ' ' + getYear(i),
+        pendapatan,
+        pengeluaran,
+        laba: pendapatan - pengeluaran,
+      });
     }
-  }, [startDate, endDate, service, transaksi]);
+    setLaporanList(laporanArray);
+  }, [startDate, endDate]);
 
   const column = useMemo(
     () => [
@@ -103,9 +114,10 @@ const Laporan = () => {
   }, [endDate, startDate]);
 
   useEffect(() => {
-    if (service && transaksi) {
+    if (service && transaksi && laporanList.length === 0) {
       getLaporanList();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, service, transaksi, getLaporanList]);
 
   if (isLoading || isLoadingTransaksi) {

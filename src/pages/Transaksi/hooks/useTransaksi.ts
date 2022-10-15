@@ -7,7 +7,7 @@ export const getTransaksi = async () => {
     .select(
       `*, transaksi_detail: id_transaksi(lama_sewa, id_motor, denda, motor: id_motor(harga))`
     )
-    .order('id_transaksi', { ascending: true });
+    .order('id_transaksi', { ascending: false });
 
   return data;
 };

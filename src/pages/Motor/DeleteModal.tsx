@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { deleteImage, deleteRow } from 'lib/supabase';
-import { Motor } from 'types/motor';
 
 interface Props {
   id: number;

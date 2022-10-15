@@ -161,6 +161,7 @@ function Table({
     {
       columns,
       data,
+      autoResetPage: false,
     },
     useFilters,
     useGlobalFilter,
