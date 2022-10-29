@@ -1,4 +1,3 @@
-import { PostgrestResponse } from '@supabase/supabase-js';
 import { getDaysInMonth, getMonth, getYear } from 'date-fns';
 import { supabase } from 'lib/supabaseClient';
 import moment from 'moment';
@@ -28,28 +27,6 @@ const Laporan = () => {
       const date = i.setHours(0, 0, 0, 0);
       const endMonth = moment(i).add(1, 'month').toDate().setHours(0, 0, 0, 0);
 
-      // const pengeluaran = service
-      //   ?.filter((item) => {
-      //     return (
-      //       new Date(item.tanggal_service).setHours(0, 0, 0, 0) <= endMonth &&
-      //       new Date(item.tanggal_service).setHours(0, 0, 0, 0) >= date
-      //     );
-      //   })
-      //   .reduce((acc, item) => {
-      //     return acc + item.total_harga;
-      //   }, 0);
-
-      // const pendapatan = transaksi
-      //   ?.filter((item) => {
-      //     return (
-      //       new Date(item.tanggal).setHours(0, 0, 0, 0) <= endMonth &&
-      //       new Date(item.tanggal).setHours(0, 0, 0, 0) >= date
-      //     );
-      //   })
-      //   .map((item) => item.transaksi_detail[0])
-      //   .reduce((total: number, num) => {
-      //     return total + num.denda + num.lama_sewa * num.motor.harga;
-      //   }, 0);
       const { data: pendapatan }: any = await supabase.rpc('total_pendapatan', {
         start_date: new Date(date),
         end_date: new Date(endMonth),
@@ -114,7 +91,7 @@ const Laporan = () => {
   }, [endDate, startDate]);
 
   useEffect(() => {
-    if (service && transaksi && laporanList.length === 0) {
+    if (service && transaksi) {
       getLaporanList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

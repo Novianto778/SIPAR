@@ -27,6 +27,11 @@ export const addTransaksi = async ({ transaksi, transaksiDetail }: Props) => {
     .from('transaksi_detail')
     .insert([...newTransaksiDetail]);
 
+  let { data: totalHarga } = await supabase
+    .from('transaksi_detail')
+    .select(`*, transaksi_detail: id_transaksi(*, motor: id_motor(*))`)
+    .eq('id_transaksi', id_transaksi);
+
   // let { error } = await supabase
   //   .from('transaksi')
   //   .update({
