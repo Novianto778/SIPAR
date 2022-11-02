@@ -2,12 +2,14 @@ import { useState } from 'react';
 import AddUserModal from './AddUserModal';
 import { useGetUser } from './hooks/useGetUser';
 import { useDeleteUser } from './hooks/useDeleteUser';
+import EditUserModal from './EditUserModal';
 
 const KelolaUser = () => {
   const { data: users } = useGetUser();
   const { mutate: deleteUser } = useDeleteUser();
   const [openModal, setOpenModal] = useState(false);
-
+  const [selectedUser, setSelectedUser] = useState('');
+  const [editModal, setEditModal] = useState(false);
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -30,6 +32,9 @@ const KelolaUser = () => {
                       Email
                     </th>
                     <th scope="col" className="table-simple text-left">
+                      Username
+                    </th>
+                    <th scope="col" className="table-simple text-left">
                       Role
                     </th>
                     <th scope="col" className="table-simple text-left">
@@ -44,14 +49,26 @@ const KelolaUser = () => {
                         {index + 1}
                       </td>
                       <td className="table-simple-row">{item.email}</td>
+                      <td className="table-simple-row">{item?.username}</td>
                       <td className="table-simple-row">Admin</td>
                       <td className="table-simple-row">
-                        <button
-                          className="text-red-500"
-                          onClick={() => deleteUser(item.id)}
-                        >
-                          Delete
-                        </button>
+                        <div className="flex gap-x-4">
+                          <button
+                            className="text-blue-500"
+                            onClick={() => {
+                              setEditModal(true);
+                              setSelectedUser(item.id);
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="text-red-500"
+                            onClick={() => deleteUser(item.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -62,6 +79,12 @@ const KelolaUser = () => {
         </div>
       </div>
       {openModal && <AddUserModal onCloseModal={() => setOpenModal(false)} />}
+      {editModal && (
+        <EditUserModal
+          onCloseModal={() => setEditModal(false)}
+          selectedUser={selectedUser}
+        />
+      )}
     </>
   );
 };

@@ -33,5 +33,5 @@ export const perpanjangSewa = async ({ id, lama }: Props) => {
 };
 
 export default function usePerpanjangSewa() {
-  return useMutation(['transaksi'], perpanjangSewa);
+  return useMutation(perpanjangSewa);
 }

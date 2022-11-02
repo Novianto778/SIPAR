@@ -20,5 +20,5 @@ export const selesaiService = async ({ id, total }: Props) => {
 };
 
 export default function useSelesaiService() {
-  return useMutation(['service'], selesaiService);
+  return useMutation(selesaiService);
 }

@@ -147,6 +147,14 @@ const EditTransaksi = () => {
           <div>
             <div className="mb-6">
               <TextField
+                label="NIK"
+                placeholder="nomor nik"
+                {...register('nik')}
+                error={errors.nik?.message}
+              />
+            </div>
+            <div className="mb-6">
+              <TextField
                 label="No Hp"
                 placeholder="+62"
                 {...register('no_telp')}

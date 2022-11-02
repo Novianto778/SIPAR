@@ -10,6 +10,8 @@ import CircularChart from './components/CircularChart';
 import TransactionReport from './components/TransactionReport';
 import { formatUang } from 'utils/formatUang';
 import { useJumlahTransaksi } from './hooks/useJumlahTransaksi';
+import useGetMotorOnGoing from 'hooks/useGetMotorOnGoing';
+import usePendapatan from 'hooks/usePendapatan';
 
 const orders = [
   {
@@ -52,14 +54,23 @@ const orders = [
 
 const Dashboard = () => {
   const { data } = useJumlahTransaksi();
+  const { data: jumlahOnGoing } = useGetMotorOnGoing();
+  const { data: pendapatan } = usePendapatan(
+    new Date('2022-01-01'),
+    new Date()
+  );
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 h-full gap-x-4">
       <div className="col-span-2">
         <section className="lg:px-2 py-4">
           <h2 className="text-lg font-semibold">Statistik</h2>
-          <div className="flex flex-wrap gap-4 items-center mt-4 justify-between">
-            <StatisticCard title="Motor On-Going" value={100} Icon={Motor} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mt-4 justify-between">
+            <StatisticCard
+              title="Motor On-Going"
+              value={jumlahOnGoing as number}
+              Icon={Motor}
+            />
             <StatisticCard
               title="Jumlah Transaksi"
               value={data as number}
@@ -67,7 +78,7 @@ const Dashboard = () => {
             />
             <StatisticCard
               title="Total Pendapatan"
-              value={formatUang(4000000)}
+              value={formatUang(parseFloat(pendapatan))}
               Icon={Calculator}
             />
           </div>

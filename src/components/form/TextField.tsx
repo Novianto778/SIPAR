@@ -13,6 +13,7 @@ interface TextFieldProps {
   spacing?: number;
   error?: string;
   width?: 'full' | '2/3' | '1/2' | '1/3' | '1/4';
+  disabled?: boolean;
 }
 
 const TextField = React.forwardRef<InputElement, TextFieldProps>(
@@ -23,6 +24,7 @@ const TextField = React.forwardRef<InputElement, TextFieldProps>(
       text = 'base',
       spacing,
       label,
+      disabled = false,
       textarea = false,
       ...rest
     },
@@ -51,6 +53,7 @@ const TextField = React.forwardRef<InputElement, TextFieldProps>(
             textarea ? 'h-32' : ''
           } text-${text}`}
           {...rest}
+          disabled={disabled}
         />
         {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
       </div>

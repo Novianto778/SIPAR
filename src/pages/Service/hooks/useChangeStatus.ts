@@ -11,5 +11,5 @@ export const changeStatus = async (id: number) => {
 };
 
 export default function useChangeStatus() {
-  return useMutation(['service'], changeStatus);
+  return useMutation(changeStatus);
 }

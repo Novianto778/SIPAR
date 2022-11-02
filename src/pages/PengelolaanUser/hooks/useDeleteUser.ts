@@ -12,7 +12,7 @@ export const deleteUser = async (uuid: string) => {
 
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
-  return useMutation(['users'], deleteUser, {
+  return useMutation(deleteUser, {
     onSuccess: () => {
       queryClient.invalidateQueries(['users']);
     },

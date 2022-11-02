@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from 'lib/supabaseClient';
 
 export const changeStatus = async (id: number) => {
@@ -7,9 +7,19 @@ export const changeStatus = async (id: number) => {
     .update({ status: 'Completed' })
     .eq('id_transaksi', id);
 
+  await supabase
+    .from('transaksi_detail')
+    .update({ status: 'Completed' })
+    .eq('id_transaksi', id);
+
   return data;
 };
 
 export default function useChangeStatus() {
-  return useMutation(['transaksi'], changeStatus);
+  const queryClient = useQueryClient();
+  return useMutation(changeStatus, {
+    onSuccess: () => {
+      return queryClient.invalidateQueries(['transaksi']);
+    },
+  });
 }

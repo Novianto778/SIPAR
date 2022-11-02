@@ -76,5 +76,5 @@ export const addTransaksi = async ({ transaksi, transaksiDetail }: Props) => {
 };
 
 export default function useAddTransaksi() {
-  return useMutation(['transaksi'], addTransaksi);
+  return useMutation(addTransaksi);
 }

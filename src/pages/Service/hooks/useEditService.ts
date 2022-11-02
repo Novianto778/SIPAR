@@ -16,7 +16,7 @@ export const editService = async (service: Service) => {
 export default function useEditService() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  return useMutation(['service'], editService, {
+  return useMutation(editService, {
     onSuccess: async () => {
       return queryClient.invalidateQueries(['service']).then(() => {
         navigate(ROUTES.SERVICE);

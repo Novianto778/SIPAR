@@ -20,5 +20,5 @@ export const editTransaksiDetail = async ({
 };
 
 export default function useEditTransaksiDetail() {
-  return useMutation(['transaksi'], editTransaksiDetail);
+  return useMutation(editTransaksiDetail);
 }

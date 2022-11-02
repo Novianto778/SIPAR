@@ -26,5 +26,5 @@ const login = async ({ email, password }: Props) => {
 };
 
 export default function useLogin() {
-  return useMutation(['login'], login);
+  return useMutation(login);
 }

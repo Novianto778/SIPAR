@@ -32,13 +32,13 @@ const TableDropdown: React.FC<Props> = ({ id }) => {
   const handleCompleteTransaksi = (id: number) => {
     mutate(id, {
       onSuccess: () => {
-        queryClient.invalidateQueries(['transaksi']);
         setDropdownPopoverShow(false);
+        return queryClient.invalidateQueries(['transaksi']);
       },
     });
   };
   return (
-    <>
+    <div className="max-w-[52px]">
       {data?.status === 'Completed' ? (
         <AiOutlineCheckCircle className="text-green-500 w-full h-full py-1 px-3" />
       ) : (
@@ -91,7 +91,7 @@ const TableDropdown: React.FC<Props> = ({ id }) => {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 

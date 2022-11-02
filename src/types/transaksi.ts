@@ -8,6 +8,7 @@ export const transaksiInputSchema = z.object({
     z.string().transform((val) => (val ? parseInt(val) : 0)),
     z.number(),
   ]),
+  nik: z.string(),
 });
 
 export const transaksiDetailInputSchema = z.object({
@@ -43,6 +44,7 @@ export const transaksiSchema = transaksiInputSchema.extend({
   id_user: z.string(),
   created_at: z.date(),
   updated_at: z.date().optional(),
+  nik: z.string(),
   // transaksiDetail: z.array(transaksiDetailSchema),
 });
 

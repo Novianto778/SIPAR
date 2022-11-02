@@ -8,7 +8,7 @@ interface Props {
 
 const StatisticCard: React.FC<Props> = ({ title, value, Icon }) => {
   return (
-    <div className="flex w-full md:w-auto items-center gap-x-4 bg-white p-4 rounded-md shadow">
+    <div className="flex w-full items-center gap-x-4 bg-white p-4 rounded-md shadow">
       <Icon className="w-10 h-10" />
       <div className="flex flex-col">
         <span className="text-sm font-medium">{title}</span>

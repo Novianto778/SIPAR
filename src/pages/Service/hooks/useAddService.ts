@@ -13,7 +13,7 @@ export const addService = async (dataService: Service) => {
 export default function useAddService() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  return useMutation(['service'], addService, {
+  return useMutation(addService, {
     onSuccess: async () => {
       return queryClient.invalidateQueries(['service']).then(() => {
         navigate(ROUTES.SERVICE);
