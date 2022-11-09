@@ -5,7 +5,7 @@ import { ROUTES } from 'constants/routes';
 import moment from 'moment';
 import useCustomer from 'pages/Customer/hooks/useCustomer';
 import { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import ReactSelect from 'react-select';
@@ -141,7 +141,7 @@ const TambahTransaksi = () => {
                 setValue('nik', data.nik);
             }
         }
-    }, [selectedCustomer, customer, register]);
+    }, [selectedCustomer, customer, setValue]);
 
     return (
         <>

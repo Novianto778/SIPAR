@@ -1,19 +1,20 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
-import { useCustomerById } from './hooks/useCustomerById';
-import { useDeleteCustomer } from './hooks/useDeleteCustomer';
+import useDeleteTransaksi from './hooks/useDeleteTransaksi';
 
 interface Props {
     onCloseModal: () => void;
-    selectedId: string;
+    selectedId: number;
 }
 
 const DeleteModal = ({ onCloseModal, selectedId }: Props) => {
-    const { data } = useCustomerById(selectedId);
-    const { mutate } = useDeleteCustomer();
+    const { mutate, isLoading } = useDeleteTransaksi();
+    const queryClient = useQueryClient();
 
-    const handleDelete = () => {
+    const handleDeleteTransaksi = () => {
         mutate(selectedId, {
             onSuccess: () => {
+                queryClient.invalidateQueries(['transaksi']);
                 onCloseModal();
             }
         });
@@ -63,14 +64,14 @@ const DeleteModal = ({ onCloseModal, selectedId }: Props) => {
                             ></path>
                         </svg>
                         <h3 className="mb-5 text-lg font-normal text-gray-500">
-                            Yakin ingin menghapus customer {data?.nama || 'ini'}
-                            ?
+                            Yakin ingin menghapus transaksi?
                         </h3>
                         <button
                             data-modal-toggle="popup-modal"
                             type="button"
                             className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2 disabled:cursor-not-allowed disabled:opacity-40"
-                            onClick={handleDelete}
+                            onClick={handleDeleteTransaksi}
+                            disabled={isLoading}
                         >
                             Yakin
                         </button>
