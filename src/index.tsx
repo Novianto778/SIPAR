@@ -7,25 +7,24 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 0,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    },
-  },
+    defaultOptions: {
+        queries: {
+            retry: 0,
+            refetchOnWindowFocus: false
+        }
+    }
 });
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <App />
-        <ReactQueryDevtools />
-      </QueryClientProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+    <React.StrictMode>
+        <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+                <App />
+                <ReactQueryDevtools />
+            </QueryClientProvider>
+        </BrowserRouter>
+    </React.StrictMode>
 );

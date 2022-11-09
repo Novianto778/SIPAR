@@ -89,11 +89,14 @@ export function SelectColumnFilter({
   );
 }
 
-export const ExportExcel = () => {
+export const ExportExcel = (props) => {
   return (
-    <button className="flex gap-x-2 items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg- -600">
+    <button
+      className="flex gap-x-2 items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg- -600"
+      onClick={props.handleExport}
+    >
       <BiExport size={24} />
-      <span>Export Excel</span>
+      <span>Export Pendapatan</span>
     </button>
   );
 };
@@ -202,34 +205,37 @@ function Table({
                     <tr {...headerGroup.getHeaderGroupProps()} key={i}>
                       {headerGroup.headers
                         .filter((col) => !col?.hidden)
-                        .map((column, i) => (
-                          // Add the sorting props to control sorting. For this example
-                          // we can add them into the header props
-                          <th
-                            key={i}
-                            scope="col"
-                            className="group px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            {...column.getHeaderProps(
-                              column.getSortByToggleProps()
-                            )}
-                          >
-                            <div className="flex items-center justify-between">
-                              {column.render('Header')}
-                              {/* Add a sort direction indicator */}
-                              <span>
-                                {column.isSorted ? (
-                                  column.isSortedDesc ? (
-                                    <SortDownIcon className="w-4 h-4 text-gray-400" />
+                        .map((column, i) => {
+                          return (
+                            // Add the sorting props to control sorting. For this example
+                            // we can add them into the header props
+
+                            <th
+                              key={i}
+                              scope="col"
+                              className="group px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                              {...column.getHeaderProps(
+                                column.getSortByToggleProps()
+                              )}
+                            >
+                              <div className="flex items-center justify-between">
+                                {column.render('Header')}
+                                {/* Add a sort direction indicator */}
+                                <span>
+                                  {column.isSorted ? (
+                                    column.isSortedDesc ? (
+                                      <SortDownIcon className="w-4 h-4 text-gray-400" />
+                                    ) : (
+                                      <SortUpIcon className="w-4 h-4 text-gray-400" />
+                                    )
                                   ) : (
-                                    <SortUpIcon className="w-4 h-4 text-gray-400" />
-                                  )
-                                ) : (
-                                  <SortIcon className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100" />
-                                )}
-                              </span>
-                            </div>
-                          </th>
-                        ))}
+                                    <SortIcon className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100" />
+                                  )}
+                                </span>
+                              </div>
+                            </th>
+                          );
+                        })}
                     </tr>
                   ))}
                 </thead>
@@ -247,9 +253,9 @@ function Table({
                         {...row.getRowProps()}
                       >
                         {row.cells.map((cell) => {
-                          // if (cell.column.show === false) {
-                          //   return null;
-                          // }
+                          if (cell.column?.hidden) {
+                            return null;
+                          }
 
                           if (cell.column.Header === 'NO') {
                             return (

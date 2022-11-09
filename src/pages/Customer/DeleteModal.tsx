@@ -1,21 +1,22 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { deleteImage, deleteRow } from 'lib/supabase';
+import React from 'react';
+import { useCustomerById } from './hooks/useCustomerById';
+import { useDeleteCustomer } from './hooks/useDeleteCustomer';
 
 interface Props {
-    id: number;
-    img: string;
-    tipeMotor: string;
     onCloseModal: () => void;
+    selectedId: string;
 }
 
-const DeleteModal = ({ id, onCloseModal, img, tipeMotor }: Props) => {
-    const queryClient = useQueryClient();
+const DeleteModal = ({ onCloseModal, selectedId }: Props) => {
+    const { data } = useCustomerById(selectedId);
+    const { mutate } = useDeleteCustomer();
 
-    const handleDelete = async () => {
-        await deleteImage('motor', img);
-        await deleteRow('motor', id);
-        await queryClient.invalidateQueries(['motor']);
-        onCloseModal();
+    const handleDelete = () => {
+        mutate(selectedId, {
+            onSuccess: () => {
+                onCloseModal();
+            }
+        });
     };
     return (
         <div
@@ -62,7 +63,8 @@ const DeleteModal = ({ id, onCloseModal, img, tipeMotor }: Props) => {
                             ></path>
                         </svg>
                         <h3 className="mb-5 text-lg font-normal text-gray-500">
-                            Yakin ingin menghapus motor {tipeMotor}?
+                            Yakin ingin menghapus customer {data?.nama || 'ini'}
+                            ?
                         </h3>
                         <button
                             data-modal-toggle="popup-modal"

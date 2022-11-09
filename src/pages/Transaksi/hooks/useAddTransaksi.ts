@@ -27,19 +27,16 @@ export const addTransaksi = async ({ transaksi, transaksiDetail }: Props) => {
     .from('transaksi_detail')
     .insert([...newTransaksiDetail]);
 
-  let { data: totalHarga } = await supabase
-    .from('transaksi_detail')
-    .select(`*, transaksi_detail: id_transaksi(*, motor: id_motor(*))`)
-    .eq('id_transaksi', id_transaksi);
+  const { data: total } = await supabase.rpc('get_transaksi_detail_total', {
+    selected_id: 56,
+  });
 
-  // let { error } = await supabase
-  //   .from('transaksi')
-  //   .update({
-  //     total: dataDetail?.reduce((acc, num) => {
-  //       return acc + num?.harga_sewa + num?.harga_denda;
-  //     }),
-  //   })
-  //   .eq('id_transaksi', id_transaksi);
+  let { error } = await supabase
+    .from('transaksi_detail')
+    .update({
+      total,
+    })
+    .eq('id', dataDetail![0].id);
 
   if (transaksi.no_telp.slice(0, 3) === '628') {
     await fetch(

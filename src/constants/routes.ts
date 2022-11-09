@@ -12,4 +12,5 @@ export const ROUTES = {
   SERVICE: '/service',
   REPORT: '/laporan',
   MANAGE_USER: '/kelola-user',
+  CUSTOMER: '/customer',
 };

@@ -43,7 +43,6 @@ const TambahTransaksiDetail: FC<Props> = ({ onCloseModal, onAdd }) => {
   });
 
   const onSubmit = (data: TransaksiDetailInput) => {
-    console.log('run');
     const newData: TransaksiDetail = {
       ...data,
       tanggal_mulai: new Date(),

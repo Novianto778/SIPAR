@@ -3,6 +3,7 @@ import { FaMotorcycle } from 'react-icons/fa';
 import { AiFillTool, AiOutlineUserAdd } from 'react-icons/ai';
 import { TbReportAnalytics } from 'react-icons/tb';
 import { BiTransfer } from 'react-icons/bi';
+import { BsPerson } from 'react-icons/bs';
 import { ROUTES } from './routes';
 
 const sidebarLinks = [
@@ -20,6 +21,11 @@ const sidebarLinks = [
     name: 'List Motor',
     icon: FaMotorcycle,
     path: ROUTES.LIST_MOTOR,
+  },
+  {
+    name: 'List Customer',
+    icon: BsPerson,
+    path: ROUTES.CUSTOMER,
   },
   {
     name: 'Service',

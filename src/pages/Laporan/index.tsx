@@ -5,6 +5,7 @@ import useService from 'pages/Service/hooks/useService';
 import useTransaksi from 'pages/Transaksi/hooks/useTransaksi';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getMonthName } from 'utils/getMonthName';
+import { utils, writeFile } from 'xlsx';
 import Table, { ExportExcel } from './Table';
 
 const Laporan = () => {
@@ -16,6 +17,48 @@ const Laporan = () => {
     new Date(getYear(new Date()), getMonth(new Date()), 30)
   );
 
+  const handleExport = async (start_date: Date, end_date: Date) => {
+    const { data: reportDetail } = await supabase.rpc('get_report_detail', {
+      start_date,
+      end_date,
+    });
+
+    const headings = [
+      [
+        'ID TRANSAKSI',
+        'TANGGAL',
+        'NAMA',
+        'NO HP',
+        'ALAMAT',
+        'TIPE MOTOR',
+        'LAMA SEWA',
+        'TANGGAL MULAI',
+        'TANGGAL SELESAI',
+        'TOTAL',
+        'DISKON',
+        'STATUS',
+      ],
+    ];
+    // const newData: any[] = [];
+    // const newData = allKegiatan.map((item, index) => {
+    //   return [
+    //     index + 1,
+    //     item.kode_kegiatan,
+    //     item.nama_kegiatan,
+    //     item.sks,
+    //     item.dasar_penilaian,
+    //     item.parent_id,
+    //     item.keterangan,
+    //   ];
+    // });
+    const wb = utils.book_new();
+    const ws = utils.json_to_sheet([]);
+    utils.sheet_add_aoa(ws, headings);
+    utils.sheet_add_json(ws, reportDetail!, { origin: 'A2', skipHeader: true });
+    utils.book_append_sheet(wb, ws, 'Report');
+    writeFile(wb, `Report ${moment(start_date).format('MMMM YYYY')}.xlsx`);
+  };
+
   const getLaporanList = useCallback(async () => {
     setLaporanList([]);
     const laporanArray = [];
@@ -24,7 +67,7 @@ const Laporan = () => {
       i <= endDate;
       i = moment(i).add(getDaysInMonth(i), 'days').toDate()
     ) {
-      const date = i.setHours(0, 0, 0, 0);
+      const date = moment(i).add(1, 'days').toDate().setHours(0, 0, 0, 0);
       const endMonth = moment(i).add(1, 'month').toDate().setHours(0, 0, 0, 0);
 
       const { data: pendapatan }: any = await supabase.rpc('total_pendapatan', {
@@ -41,6 +84,8 @@ const Laporan = () => {
       );
 
       laporanArray.push({
+        start_date: new Date(date).toISOString(),
+        end_date: new Date(endMonth).toISOString(),
         bulan: getMonthName(getMonth(i)) + ' ' + getYear(i),
         pendapatan,
         pengeluaran,
@@ -52,6 +97,16 @@ const Laporan = () => {
 
   const column = useMemo(
     () => [
+      {
+        Header: 'Start Date',
+        accessor: 'start_date',
+        hidden: true,
+      },
+      {
+        Header: 'End Date',
+        accessor: 'end_date',
+        hidden: true,
+      },
       {
         Header: 'NO',
         accessor: 'no',
@@ -78,7 +133,13 @@ const Laporan = () => {
       {
         Header: 'Aksi',
         accessor: 'aksi',
-        Cell: ExportExcel,
+        Cell: ({ row }: any) => (
+          <ExportExcel
+            handleExport={() =>
+              handleExport(row.original.start_date, row.original.end_date)
+            }
+          />
+        ),
       },
     ],
     []

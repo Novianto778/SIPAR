@@ -19,9 +19,14 @@ import EditService from 'pages/Service/EditService';
 import Laporan from 'pages/Laporan';
 import { Toaster } from 'react-hot-toast';
 import KelolaUser from 'pages/PengelolaanUser';
+import NotFound from 'pages/404';
+import ListCustomer from 'pages/Customer';
+import TambahCustomer from 'pages/Customer/TambahCustomer';
+import EditCustomer from 'pages/Customer/EditCustomer';
 
 function App() {
   const { loading } = useAuthStateChange();
+
   if (loading) return <div>Loading...</div>;
   return (
     <>
@@ -34,6 +39,11 @@ function App() {
               <Route index element={<ListMotor />} />
               <Route path="add" element={<AddMotor />} />
               <Route path="edit/:id" element={<EditMotor />} />
+            </Route>
+            <Route path={ROUTES.CUSTOMER}>
+              <Route index element={<ListCustomer />} />
+              <Route path="add" element={<TambahCustomer />} />
+              <Route path="edit/:id" element={<EditCustomer />} />
             </Route>
             <Route path={ROUTES.TRANSACTION}>
               <Route index element={<Transaksi />} />
@@ -52,7 +62,7 @@ function App() {
         </Route>
         <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.REGISTER} element={<div>Register</div>} />
-        <Route path="*" element={<div>Not Found</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
