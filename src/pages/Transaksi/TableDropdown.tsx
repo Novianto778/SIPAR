@@ -8,6 +8,9 @@ import useChangeStatus from './hooks/useChangeStatus';
 import { useQueryClient } from '@tanstack/react-query';
 import useOnClickOutside from 'hooks/onClickOutside';
 import useGetTransaksiById from './hooks/useGetTransaksiById';
+import { GrDocumentPdf } from 'react-icons/gr';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface Props {
     id: string;
@@ -17,11 +20,57 @@ interface Props {
 const TableDropdown: React.FC<Props> = ({ id, onOpenDeleteModal }) => {
     const navigate = useNavigate();
     const { mutate } = useChangeStatus();
-    const { data } = useGetTransaksiById(parseInt(id));
+    const { data: singleTransaksi } = useGetTransaksiById(parseInt(id));
     const queryClient = useQueryClient();
     const [dropdownPopoverShow, setDropdownPopoverShow] = React.useState(false);
     const btnDropdownRef = React.useRef(null);
     useOnClickOutside(btnDropdownRef, () => setDropdownPopoverShow(false));
+
+    const handleExportPDF = (transaksi: any) => {
+        const unit = 'pt';
+        const size = 'A4'; // Use A1, A2, A3 or A4
+        const orientation = 'portrait'; // portrait or landscape
+
+        const marginLeft = 40;
+        const doc = new jsPDF(orientation, unit, size);
+
+        doc.setFontSize(15);
+
+        const title = `Report - #${transaksi?.id_transaksi}`;
+        const headers = [
+            [
+                'Nama',
+                'NIK',
+                'No Telp',
+                'Tanggal',
+                ...transaksi.transaksi_detail.map(
+                    (item: any, index: number) => `Motor ${index + 1}`
+                )
+            ]
+        ];
+
+        const data = [
+            [
+                transaksi.nama,
+                transaksi.nik,
+                transaksi.no_telp,
+                transaksi.tanggal,
+                ...transaksi.transaksi_detail.map(
+                    (item: any) => item.motor.tipe
+                )
+            ]
+        ];
+
+        let content = {
+            startY: 50,
+            head: headers,
+            body: data
+        };
+
+        doc.text(title, marginLeft, 40);
+        autoTable(doc, content);
+        doc.save('report.pdf');
+    };
 
     const openDropdownPopover = () => {
         setDropdownPopoverShow(true);
@@ -40,8 +89,11 @@ const TableDropdown: React.FC<Props> = ({ id, onOpenDeleteModal }) => {
     };
     return (
         <div className="max-w-[52px]">
-            {data?.status === 'Completed' ? (
-                <AiOutlineCheckCircle className="text-green-500 w-full h-full py-1 px-3" />
+            {singleTransaksi?.status === 'Completed' ? (
+                <GrDocumentPdf
+                    className="text-green-500 w-full h-full py-1 px-3 cursor-pointer"
+                    onClick={() => handleExportPDF(singleTransaksi)}
+                />
             ) : (
                 <>
                     <button

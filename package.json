@@ -18,6 +18,8 @@
     "@types/react-dom": "^18.0.6",
     "apexcharts": "^3.35.5",
     "date-fns": "^2.29.3",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
