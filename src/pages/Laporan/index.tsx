@@ -17,7 +17,7 @@ const Laporan = () => {
         new Date(getYear(new Date()), getMonth(new Date()), 30)
     );
 
-    console.log(startDate, endDate);
+    // console.log(startDate, endDate);
 
     const handleExport = async (start_date: Date, end_date: Date) => {
         const { data: reportDetail } = await supabase.rpc('get_report_detail', {
@@ -25,7 +25,7 @@ const Laporan = () => {
             end_date
         });
 
-        console.log(start_date, end_date);
+        // console.log(start_date, end_date);
 
         const newReport = reportDetail?.map((item: any) => {
             return [
@@ -95,7 +95,7 @@ const Laporan = () => {
             const endMonth = moment(i)
                 .add(1, 'month')
                 .toDate()
-                .setHours(0, 0, 0, 0);
+                .setHours(24, 0, 0, 0);
 
             const { data: pendapatan }: any = await supabase.rpc(
                 'total_pendapatan',
@@ -104,7 +104,7 @@ const Laporan = () => {
                     end_date:
                         endDate > new Date(endMonth)
                             ? new Date(endMonth)
-                            : endDate
+                            : moment(endDate).add(1, 'days')
                 }
             );
 
@@ -115,7 +115,7 @@ const Laporan = () => {
                     end_date:
                         endDate > new Date(endMonth)
                             ? new Date(endMonth)
-                            : endDate
+                            : moment(endDate).add(1, 'days')
                 }
             );
 
@@ -124,7 +124,7 @@ const Laporan = () => {
                 end_date:
                     endDate > new Date(endMonth)
                         ? new Date(endMonth).toISOString()
-                        : endDate.toISOString(),
+                        : moment(endDate).add(2, 'days').toISOString(),
                 bulan: getMonthName(getMonth(i)) + ' ' + getYear(i),
                 pendapatan,
                 pengeluaran,
@@ -173,8 +173,6 @@ const Laporan = () => {
                 Header: 'Aksi',
                 accessor: 'aksi',
                 Cell: ({ row }: any) => {
-                    console.log(row);
-
                     return (
                         <ExportExcel
                             handleExport={() =>
