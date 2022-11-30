@@ -6,6 +6,7 @@ import useTransaksi from 'pages/Transaksi/hooks/useTransaksi';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getMonthName } from 'utils/getMonthName';
 import { utils, writeFile } from 'xlsx';
+import LineChart from './LineChart';
 import Table, { ExportExcel } from './Table';
 
 const Laporan = () => {
@@ -80,7 +81,12 @@ const Laporan = () => {
             skipHeader: true
         });
         utils.book_append_sheet(wb, ws, 'Report');
-        writeFile(wb, `Report ${moment(start_date).format('MMMM YYYY')}.xlsx`);
+        writeFile(
+            wb,
+            `Report ${moment(start_date).format('MMMM YYYY')} - ${moment(
+                end_date
+            ).format('MMMM YYYY')}.xlsx`
+        );
     };
 
     const getLaporanList = useCallback(async () => {
@@ -202,14 +208,18 @@ const Laporan = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startDate, endDate, service, transaksi, getLaporanList]);
 
-    if (isLoading || isLoadingTransaksi) {
-        return <div>Loading...</div>;
-    }
+    if (isLoading || isLoadingTransaksi) return <div>Loading...</div>;
 
     return (
         <>
             <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Data Laporan</h2>
+                <button
+                    className="px-6 py-2 bg-blue-500 rounded text-white font-semibold"
+                    onClick={() => handleExport(startDate, endDate)}
+                >
+                    Export All
+                </button>
             </div>
             <div className="mt-8 h-full">
                 <div className="min-w-full overflow-x-auto h-full">
@@ -225,6 +235,7 @@ const Laporan = () => {
                     </div>
                 </div>
             </div>
+            <LineChart laporanList={laporanList} />
         </>
     );
 };
