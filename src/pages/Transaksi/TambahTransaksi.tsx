@@ -132,7 +132,6 @@ const TambahTransaksi = () => {
             const data = customer?.find(
                 (item) => item.customer_id === selectedCustomer.value
             );
-            console.log(data);
 
             if (data) {
                 setValue('nama', data.nama);

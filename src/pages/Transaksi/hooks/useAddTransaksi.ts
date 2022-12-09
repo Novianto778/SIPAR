@@ -1,77 +1,91 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from 'lib/supabaseClient';
 import { Motor } from 'types/motor';
 import { Transaksi, TransaksiDetail } from 'types/transaksi';
 
 interface Props {
-  transaksi: Transaksi;
-  transaksiDetail: (TransaksiDetail & {
-    motor?: Motor;
-  })[];
+    transaksi: Transaksi;
+    transaksiDetail: (TransaksiDetail & {
+        motor?: Motor;
+    })[];
 }
 export const addTransaksi = async ({ transaksi, transaksiDetail }: Props) => {
-  // const {data: motor } = await supabase.from('motor').select('*');
-  // const total = transaksiDetail.reduce((acc, item) => {
-  //   return acc + item.lama_sewa;
-  // }, 0);
-  let { data } = await supabase.from('transaksi').insert([transaksi]);
-  const id_transaksi = data![0].id_transaksi;
+    // const {data: motor } = await supabase.from('motor').select('*');
+    // const total = transaksiDetail.reduce((acc, item) => {
+    //   return acc + item.lama_sewa;
+    // }, 0);
+    let { data } = await supabase.from('transaksi').insert([transaksi]);
+    const id_transaksi = data![0].id_transaksi;
 
-  const newTransaksiDetail = transaksiDetail.map((item) => ({
-    ...item,
-    id_transaksi,
-    id_motor: item.id_motor.value,
-  }));
+    const newTransaksiDetail = transaksiDetail.map((item) => {
+        return {
+            ...item,
+            id_transaksi,
+            id_motor: item.id_motor.value
+        };
+    });
 
-  let { data: dataDetail } = await supabase
-    .from('transaksi_detail')
-    .insert([...newTransaksiDetail]);
+    transaksiDetail.forEach(async (item) => {
+        const data = await supabase.rpc('decrement_stok', {
+            id: item.id_motor.value
+        });
+        console.log(data);
+    });
 
-  const { data: total } = await supabase.rpc('get_transaksi_detail_total', {
-    selected_id: 56,
-  });
+    let { data: dataDetail } = await supabase
+        .from('transaksi_detail')
+        .insert([...newTransaksiDetail]);
 
-  let { error } = await supabase
-    .from('transaksi_detail')
-    .update({
-      total,
-    })
-    .eq('id', dataDetail![0].id);
+    const { data: total } = await supabase.rpc('get_transaksi_detail_total', {
+        selected_id: 56
+    });
 
-  if (transaksi.no_telp.slice(0, 3) === '628') {
-    await fetch(
-      'https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'API-Key': process.env.REACT_APP_SENDTALK_API_KEY!,
-        },
-        body: JSON.stringify({
-          phone: transaksi.no_telp,
-          messageType: 'text',
-          body: `Nota Transaksi: ${id_transaksi}
+    let { error } = await supabase
+        .from('transaksi_detail')
+        .update({
+            total
+        })
+        .eq('id', dataDetail![0].id);
+
+    if (transaksi.no_telp.slice(0, 3) === '628') {
+        await fetch(
+            'https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'API-Key': process.env.REACT_APP_SENDTALK_API_KEY!
+                },
+                body: JSON.stringify({
+                    phone: transaksi.no_telp,
+                    messageType: 'text',
+                    body: `Nota Transaksi: ${id_transaksi}
         Nama: ${transaksi.nama}
         Alamat: ${transaksi.alamat}
         No. HP: ${transaksi.no_telp}
         Tanggal Transaksi: ${transaksi.tanggal.toDateString()}
         Detail Transaksi:
         ${transaksiDetail?.map(
-          (item) => `
+            (item) => `
         Nama Motor: ${item.plat_motor}
         Harga: ${item.id_motor.label}
         Lama Sewa: ${item.lama_sewa}
         `
         )}
-        `,
-        }),
-      }
-    );
-  }
+        `
+                })
+            }
+        );
+    }
 
-  return { data, dataDetail };
+    return { data, dataDetail };
 };
 
 export default function useAddTransaksi() {
-  return useMutation(addTransaksi);
+    const queryClient = useQueryClient();
+    return useMutation(addTransaksi, {
+        onSuccess: () => {
+            return queryClient.invalidateQueries(['motor']);
+        }
+    });
 }

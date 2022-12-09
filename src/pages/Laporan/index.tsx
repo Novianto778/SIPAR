@@ -4,15 +4,17 @@ import moment from 'moment';
 import useService from 'pages/Service/hooks/useService';
 import useTransaksi from 'pages/Transaksi/hooks/useTransaksi';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLaporanStore } from 'store/laporanStore';
 import { getMonthName } from 'utils/getMonthName';
 import { utils, writeFile } from 'xlsx';
 import LineChart from './LineChart';
 import Table, { ExportExcel } from './Table';
 
 const Laporan = () => {
+    const { laporanList, setLaporanList } = useLaporanStore();
     const { data: service, isLoading } = useService();
     const { data: transaksi, isLoading: isLoadingTransaksi } = useTransaksi();
-    const [laporanList, setLaporanList] = useState<any[]>([]);
+    // const [laporanList, setLaporanList] = useState<any[]>([]);
     const [startDate, setStartDate] = useState(new Date('2022-09-01'));
     const [endDate, setEndDate] = useState(
         new Date(getYear(new Date()), getMonth(new Date()), 30)
@@ -137,8 +139,8 @@ const Laporan = () => {
                 laba: pendapatan - pengeluaran
             });
         }
-        setLaporanList(laporanArray);
-    }, [startDate, endDate]);
+        setLaporanList(laporanArray as any);
+    }, [startDate, endDate, setLaporanList]);
 
     const column = useMemo(
         () => [

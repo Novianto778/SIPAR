@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { ApexOptions } from 'apexcharts';
-import moment from 'moment';
 import ReactApexChart from 'react-apexcharts';
 
 type Props = {

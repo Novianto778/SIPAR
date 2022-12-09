@@ -7,10 +7,16 @@ export const changeStatus = async (id: number) => {
         .update({ status: 'Completed' })
         .eq('id_transaksi', id);
 
-    await supabase
+    let { data: transaksiDetail } = await supabase
         .from('transaksi_detail')
         .update({ status: 'Completed' })
         .eq('id_transaksi', id);
+
+    transaksiDetail?.forEach(async (item) => {
+        await supabase.rpc('increment_stok', {
+            id: item.id_motor
+        });
+    });
 
     return data;
 };
