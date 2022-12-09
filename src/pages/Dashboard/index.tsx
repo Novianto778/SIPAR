@@ -1,5 +1,4 @@
 import { ReactComponent as Motor } from 'assets/icon/motor.svg';
-import { ReactComponent as Beat } from 'assets/icon/honda-beat.svg';
 import { ReactComponent as Transaction } from 'assets/icon/transaction.svg';
 import { ReactComponent as Calculator } from 'assets/icon/calculator.svg';
 import StatisticCard from './components/StatisticCard';
@@ -9,54 +8,128 @@ import useGetMotorOnGoing from 'hooks/useGetMotorOnGoing';
 import usePendapatan from 'hooks/usePendapatan';
 import LineChart from 'pages/Laporan/LineChart';
 import { useLaporanStore } from 'store/laporanStore';
+import useService from 'pages/Service/hooks/useService';
+import useTransaksi from 'pages/Transaksi/hooks/useTransaksi';
+import { useCallback, useEffect, useState } from 'react';
+import { getDaysInMonth, getMonth, getYear } from 'date-fns';
+import moment from 'moment';
+import { supabase } from 'lib/supabaseClient';
+import { getMonthName } from 'utils/getMonthName';
 
-const orders = [
-    {
-        name: 'Eren Jaegar',
-        motor: 'Honda Beat - AB 1234 CD',
-        total: 'Rp 125.000',
-        status: 'completed'
-    },
-    {
-        name: 'Reiner Braunn',
-        motor: 'Honda Beat - AB 1234 CD',
-        total: 'Rp 145.000',
-        status: 'pending'
-    },
-    {
-        name: 'Levi Ackerman',
-        motor: 'Honda Beat - AB 1234 CD',
-        total: 'Rp 105.000',
-        status: 'pending'
-    },
-    {
-        name: 'Historia Reiss',
-        motor: 'Honda Beat - AB 1234 CD',
-        total: 'Rp 45.000',
-        status: 'completed'
-    },
-    {
-        name: 'Armin Arlert',
-        motor: 'Honda Beat - AB 1234 CD',
-        total: 'Rp 125.000',
-        status: 'completed'
-    },
-    {
-        name: 'Hanji Zoe',
-        motor: 'Honda Beat - AB 1234 CD',
-        total: 'Rp 245.000',
-        status: 'completed'
-    }
-];
+// const orders = [
+//     {
+//         name: 'Eren Jaegar',
+//         motor: 'Honda Beat - AB 1234 CD',
+//         total: 'Rp 125.000',
+//         status: 'completed'
+//     },
+//     {
+//         name: 'Reiner Braunn',
+//         motor: 'Honda Beat - AB 1234 CD',
+//         total: 'Rp 145.000',
+//         status: 'pending'
+//     },
+//     {
+//         name: 'Levi Ackerman',
+//         motor: 'Honda Beat - AB 1234 CD',
+//         total: 'Rp 105.000',
+//         status: 'pending'
+//     },
+//     {
+//         name: 'Historia Reiss',
+//         motor: 'Honda Beat - AB 1234 CD',
+//         total: 'Rp 45.000',
+//         status: 'completed'
+//     },
+//     {
+//         name: 'Armin Arlert',
+//         motor: 'Honda Beat - AB 1234 CD',
+//         total: 'Rp 125.000',
+//         status: 'completed'
+//     },
+//     {
+//         name: 'Hanji Zoe',
+//         motor: 'Honda Beat - AB 1234 CD',
+//         total: 'Rp 245.000',
+//         status: 'completed'
+//     }
+// ];
 
 const Dashboard = () => {
-    const { laporanList } = useLaporanStore();
+    const { data: service, isLoading } = useService();
+    const { data: transaksi, isLoading: isLoadingTransaksi } = useTransaksi();
+    // const [laporanList, setLaporanList] = useState<any[]>([]);
+    const [startDate, setStartDate] = useState(new Date('2022-09-01'));
+    const [endDate, setEndDate] = useState(
+        new Date(getYear(new Date()), getMonth(new Date()), 30)
+    );
+    const { laporanList, setLaporanList } = useLaporanStore();
     const { data } = useJumlahTransaksi();
     const { data: jumlahOnGoing } = useGetMotorOnGoing();
     const { data: pendapatan } = usePendapatan(
         new Date('2022-01-01'),
         new Date()
     );
+
+    const getLaporanList = useCallback(async () => {
+        setLaporanList([]);
+        const laporanArray = [];
+        for (
+            let i = startDate;
+            i <= endDate;
+            i = moment(i).add(getDaysInMonth(i), 'days').toDate()
+        ) {
+            const date = moment(i).add(1, 'days').toDate().setHours(0, 0, 0, 0);
+            const endMonth = moment(i)
+                .add(1, 'month')
+                .toDate()
+                .setHours(24, 0, 0, 0);
+
+            const { data: pendapatan }: any = await supabase.rpc(
+                'total_pendapatan',
+                {
+                    start_date: new Date(date),
+                    end_date:
+                        endDate > new Date(endMonth)
+                            ? new Date(endMonth)
+                            : moment(endDate).add(1, 'days')
+                }
+            );
+
+            const { data: pengeluaran }: any = await supabase.rpc(
+                'total_pengeluaran',
+                {
+                    start_date: new Date(date),
+                    end_date:
+                        endDate > new Date(endMonth)
+                            ? new Date(endMonth)
+                            : moment(endDate).add(1, 'days')
+                }
+            );
+
+            laporanArray.push({
+                start_date: new Date(date).toISOString(),
+                end_date:
+                    endDate > new Date(endMonth)
+                        ? new Date(endMonth).toISOString()
+                        : moment(endDate).add(2, 'days').toISOString(),
+                bulan: getMonthName(getMonth(i)) + ' ' + getYear(i),
+                pendapatan,
+                pengeluaran,
+                laba: pendapatan - pengeluaran
+            });
+        }
+        setLaporanList(laporanArray as any);
+    }, [startDate, endDate, setLaporanList]);
+
+    useEffect(() => {
+        if (service && transaksi) {
+            getLaporanList();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate, endDate, service, transaksi, getLaporanList]);
+
+    if (isLoading || isLoadingTransaksi) return <div>Loading...</div>;
 
     return (
         <div className="flex flex-col h-full gap-x-4">
